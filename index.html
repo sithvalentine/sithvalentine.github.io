@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wealth Builder Tools – Free Financial Calculators</title>
+  <meta name="description" content="Free financial tools to help you budget smarter, track wealth, and build a better financial future." />
+
+  <!-- Google AdSense verification -->
+  <meta name="google-adsense-account" content="ca-pub-6409027472747425">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6409027472747425"
+    crossorigin="anonymous"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 16px 60px;
+      color: #333;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .site-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .site-header p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.85);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Tool grid ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto 48px;
+    }
+
+    .tool-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 32px 28px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .tool-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    }
+
+    .tool-icon {
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+    .tool-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #222;
+    }
+    .tool-desc {
+      font-size: 0.88rem;
+      color: #6b7280;
+      line-height: 1.6;
+      flex: 1;
+    }
+    .tool-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      align-self: flex-start;
+    }
+    .badge-purple { background: #ede9fe; color: #7c3aed; }
+    .badge-green  { background: #d1fae5; color: #065f46; }
+    .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+
+    .tool-cta {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #7c3aed;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.55);
+      font-size: 0.8rem;
+    }
+    footer a { color: rgba(255,255,255,0.75); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>💰 Wealth Builder Tools</h1>
+    <p>Free, simple financial calculators to help you budget smarter and build a stronger financial future.</p>
+  </header>
+
+  <div class="tools-grid">
+
+    <a class="tool-card" href="https://sithvalentine.github.io/smart-budget-calculator/">
+      <div class="tool-icon">📊</div>
+      <div class="tool-name">Smart Budget Calculator</div>
+      <div class="tool-desc">Customize your own budget percentages for needs, wants, and savings. Drag the sliders to match your real life — not just a preset formula.</div>
+      <span class="tool-badge badge-purple">Adjustable %</span>
+      <div class="tool-cta">Open tool →</div>
+    </a>
+
+    <a class="tool-card" href="https://sithvalentine.github.io/wealth-builder-tools/budget-calculator.html">
+      <div class="tool-icon">🏦</div>
+      <div class="tool-name">50/20/30 Budget Calculator</div>
+      <div class="tool-desc">Enter your monthly income and instantly see how to split it using the classic 50/20/30 rule — 50% needs, 20% wants, 30% savings.</div>
+      <span class="tool-badge badge-green">Classic Rule</span>
+      <div class="tool-cta">Open tool →</div>
+    </a>
+
+    <a class="tool-card" href="https://sithvalentine.github.io/wealth-builder-tools/wealth-tracker.html">
+      <div class="tool-icon">🏆</div>
+      <div class="tool-name">Wealth Milestone Tracker</div>
+      <div class="tool-desc">Track your progress toward wealth milestones with a gamified approach. See how close you are to your next financial level.</div>
+      <span class="tool-badge badge-blue">Goal Tracking</span>
+      <div class="tool-cta">Open tool →</div>
+    </a>
+
+  </div>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Wealth Builder Tools &nbsp;|&nbsp;
+    <a href="#">Privacy Policy</a> &nbsp;|&nbsp;
+    <a href="#">Disclaimer</a></p>
+    <p style="margin-top:8px">Free tools. No sign-up required.</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
