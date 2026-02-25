@@ -416,8 +416,7 @@
     const n           = parseInt(document.getElementById('compound').value, 10);    // compounds per year
     const cf          = parseInt(document.getElementById('contrib-freq').value, 10); // contributions per year
 
-    if (rate === 0 && monthly === 0 && principal === 0) return;
-    if (years < 1) return;
+    if ((principal === 0 && monthly === 0) || rate === 0 || years < 1) return;
 
     const r = rate / 100;
 
