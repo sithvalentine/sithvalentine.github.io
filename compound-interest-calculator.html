@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compound Interest Calculator – Wealth Builder Tools</title>
+  <meta name="description" content="Free compound interest calculator. See how your investment grows over time with initial deposit, contributions, interest rate, and compounding frequency." />
+
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-6409027472747425">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6409027472747425"
+    crossorigin="anonymous"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a0533 0%, #3b0764 50%, #1a0533 100%);
+      min-height: 100vh;
+      color: #1e1b4b;
+      padding: 28px 12px 60px;
+    }
+
+    /* ── Ad slots ── */
+    .ad-top, .ad-bottom {
+      max-width: 760px;
+      margin: 0 auto 20px;
+      min-height: 90px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .ad-bottom { margin-top: 20px; margin-bottom: 0; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin: 0 auto 18px;
+      max-width: 760px;
+      display: block;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 760px;
+      margin: 0 auto;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 32px; }
+    .header h1 {
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .header p { color: #6b7280; font-size: 0.92rem; }
+
+    /* ── Form grid ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+
+    label.field-label {
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #4b5563;
+    }
+
+    .input-wrap { position: relative; }
+    .input-wrap .prefix, .input-wrap .suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 700;
+      color: #7c3aed;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+    .input-wrap .prefix { left: 13px; }
+    .input-wrap .suffix { right: 13px; }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 13px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 2px solid #e5e7eb;
+      border-radius: 11px;
+      outline: none;
+      color: #111827;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    .form-input:focus {
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
+    }
+    .has-prefix .form-input  { padding-left: 30px; }
+    .has-suffix .form-input  { padding-right: 36px; }
+
+    select.form-input { cursor: pointer; }
+
+    /* ── Calculate button ── */
+    .btn-calc {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-bottom: 28px;
+    }
+    .btn-calc:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    /* ── Results summary ── */
+    .results { display: none; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 480px) { .summary-grid { grid-template-columns: 1fr; } }
+
+    .summary-card {
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .summary-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .summary-card .s-icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .summary-card .s-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 6px; }
+    .summary-card .s-value { font-size: 1.4rem; font-weight: 800; color: #111827; }
+    .summary-card .s-sub { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
+
+    /* ── Chart ── */
+    .chart-wrap {
+      position: relative;
+      height: 280px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Year table ── */
+    .table-section h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 12px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 2px solid #e5e7eb;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    thead th {
+      background: #f3f4f6;
+      padding: 10px 14px;
+      text-align: right;
+      font-weight: 700;
+      color: #374151;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    thead th:first-child { text-align: left; }
+    tbody td {
+      padding: 9px 14px;
+      text-align: right;
+      color: #4b5563;
+      border-top: 1px solid #f3f4f6;
+    }
+    tbody td:first-child { text-align: left; font-weight: 600; color: #111827; }
+    tbody tr:hover { background: #faf5ff; }
+
+    /* ── Info box ── */
+    .info-box {
+      margin-top: 24px;
+      background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+      border: 1px solid #c4b5fd;
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .info-box h3 { font-size: 0.9rem; font-weight: 800; color: #4c1d95; margin-bottom: 8px; }
+    .info-box p  { font-size: 0.82rem; color: #5b21b6; line-height: 1.65; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 2px dashed #e5e7eb; margin: 24px 0; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      margin-top: 28px;
+    }
+    footer a { color: rgba(255,255,255,0.65); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Ad -->
+  <div class="ad-top">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-6409027472747425"
+         data-ad-slot="4444444444"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <a class="back-link" href="https://sithvalentine.github.io">← Back to Wealth Builder Tools</a>
+
+  <div class="card">
+
+    <div class="header">
+      <h1>📈 Compound Interest Calculator</h1>
+      <p>See how your money grows over time with the power of compounding</p>
+    </div>
+
+    <!-- Inputs -->
+    <div class="form-grid">
+
+      <div class="field">
+        <label class="field-label" for="initial">Initial Investment</label>
+        <div class="input-wrap has-prefix">
+          <span class="prefix">$</span>
+          <input class="form-input" id="initial" type="number" min="0" step="100" placeholder="5,000" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="monthly">Monthly Contribution</label>
+        <div class="input-wrap has-prefix">
+          <span class="prefix">$</span>
+          <input class="form-input" id="monthly" type="number" min="0" step="50" placeholder="200" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="rate">Annual Interest Rate</label>
+        <div class="input-wrap has-suffix">
+          <input class="form-input" id="rate" type="number" min="0" max="100" step="0.1" placeholder="7" />
+          <span class="suffix">%</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="years">Time Period (Years)</label>
+        <div class="input-wrap">
+          <input class="form-input" id="years" type="number" min="1" max="100" step="1" placeholder="20" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="compound">Compounding Frequency</label>
+        <select class="form-input" id="compound">
+          <option value="365">Daily</option>
+          <option value="12" selected>Monthly</option>
+          <option value="4">Quarterly</option>
+          <option value="2">Semi-Annually</option>
+          <option value="1">Annually</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="contrib-freq">Contribution Frequency</label>
+        <select class="form-input" id="contrib-freq">
+          <option value="12" selected>Monthly</option>
+          <option value="4">Quarterly</option>
+          <option value="1">Annually</option>
+          <option value="0">No Contributions</option>
+        </select>
+      </div>
+
+    </div>
+
+    <button class="btn-calc" id="btn-calc">Calculate Growth →</button>
+
+    <!-- Results -->
+    <div class="results" id="results">
+
+      <div class="summary-grid">
+        <div class="summary-card" style="--accent:#059669;--bg:#ecfdf5;--border:#a7f3d0">
+          <div class="s-icon">💰</div>
+          <div class="s-label">Future Value</div>
+          <div class="s-value" id="res-future">—</div>
+          <div class="s-sub">Total balance</div>
+        </div>
+        <div class="summary-card" style="--accent:#2563eb;--bg:#eff6ff;--border:#bfdbfe">
+          <div class="s-icon">🏦</div>
+          <div class="s-label">Total Deposited</div>
+          <div class="s-value" id="res-deposited">—</div>
+          <div class="s-sub">Principal + contributions</div>
+        </div>
+        <div class="summary-card" style="--accent:#7c3aed;--bg:#f5f3ff;--border:#ddd6fe">
+          <div class="s-icon">📈</div>
+          <div class="s-label">Interest Earned</div>
+          <div class="s-value" id="res-interest">—</div>
+          <div class="s-sub">From compounding</div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-wrap">
+        <canvas id="growthChart"></canvas>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Year-by-year table -->
+      <div class="table-section">
+        <h2>Year-by-Year Breakdown</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Balance</th>
+                <th>Deposited</th>
+                <th>Interest Earned</th>
+              </tr>
+            </thead>
+            <tbody id="year-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /#results -->
+
+    <div class="info-box">
+      <h3>💡 What is Compound Interest?</h3>
+      <p>
+        Compound interest is interest earned on both your original deposit <em>and</em> the interest
+        you've already accumulated. Over time this creates a snowball effect — the longer you invest,
+        the faster your money grows. Even small monthly contributions can make a dramatic difference
+        over 20–30 years. Start early, stay consistent, and let time do the heavy lifting.
+      </p>
+    </div>
+
+  </div><!-- /.card -->
+
+  <!-- Bottom Ad -->
+  <div class="ad-bottom">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-6409027472747425"
+         data-ad-slot="5555555555"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Wealth Builder Tools &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/privacy-policy.html">Privacy Policy</a> &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/disclaimer.html">Disclaimer</a></p>
+  </footer>
+
+<script>
+  const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+  let chartInstance = null;
+
+  function calculate() {
+    const principal   = parseFloat(document.getElementById('initial').value)      || 0;
+    const monthly     = parseFloat(document.getElementById('monthly').value)       || 0;
+    const rate        = parseFloat(document.getElementById('rate').value)           || 0;
+    const years       = parseInt(document.getElementById('years').value, 10)       || 0;
+    const n           = parseInt(document.getElementById('compound').value, 10);    // compounds per year
+    const cf          = parseInt(document.getElementById('contrib-freq').value, 10); // contributions per year
+
+    if (rate === 0 && monthly === 0 && principal === 0) return;
+    if (years < 1) return;
+
+    const r = rate / 100;
+
+    // Build year-by-year data
+    const labels       = [];
+    const balances     = [];
+    const deposited    = [];
+    const interestArr  = [];
+
+    let balance    = principal;
+    let totalDepos = principal;
+
+    for (let y = 1; y <= years; y++) {
+      // Simulate month by month for accuracy
+      for (let m = 1; m <= 12; m++) {
+        // Add contribution at start of period if applicable
+        if (cf > 0) {
+          // monthly contribution
+          if (cf === 12) {
+            balance   += monthly;
+            totalDepos += monthly;
+          } else if (cf === 4 && m % 3 === 1) {
+            balance    += monthly * 3;
+            totalDepos += monthly * 3;
+          } else if (cf === 1 && m === 1) {
+            balance    += monthly * 12;
+            totalDepos += monthly * 12;
+          }
+        }
+        // Compound interest
+        balance *= (1 + r / n) ** (n / 12);
+      }
+      labels.push('Year ' + y);
+      balances.push(Math.round(balance));
+      deposited.push(Math.round(totalDepos));
+      interestArr.push(Math.round(balance - totalDepos));
+    }
+
+    const finalBalance  = balances[balances.length - 1];
+    const finalDepos    = deposited[deposited.length - 1];
+    const finalInterest = interestArr[interestArr.length - 1];
+
+    // Summary cards
+    document.getElementById('res-future').textContent    = fmt(finalBalance);
+    document.getElementById('res-deposited').textContent = fmt(finalDepos);
+    document.getElementById('res-interest').textContent  = fmt(finalInterest);
+
+    // Chart
+    if (chartInstance) chartInstance.destroy();
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Amount Deposited',
+            data: deposited,
+            backgroundColor: 'rgba(37,99,235,0.7)',
+            borderRadius: 4,
+            stack: 'stack',
+          },
+          {
+            label: 'Interest Earned',
+            data: interestArr,
+            backgroundColor: 'rgba(124,58,237,0.75)',
+            borderRadius: 4,
+            stack: 'stack',
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { weight: '700', size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ' ' + ctx.dataset.label + ': ' + fmt(ctx.raw),
+              footer: (items) => ' Total: ' + fmt(items.reduce((s, i) => s + i.raw, 0)),
+            }
+          }
+        },
+        scales: {
+          x: { stacked: true, grid: { display: false }, ticks: { maxTicksLimit: 10 } },
+          y: { stacked: true, ticks: { callback: (v) => '$' + (v >= 1000 ? (v/1000).toFixed(0) + 'k' : v) } },
+        },
+      },
+    });
+
+    // Year table
+    const tbody = document.getElementById('year-table');
+    tbody.innerHTML = '';
+    for (let i = 0; i < labels.length; i++) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${labels[i]}</td>
+        <td>${fmt(balances[i])}</td>
+        <td>${fmt(deposited[i])}</td>
+        <td>${fmt(interestArr[i])}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('btn-calc').addEventListener('click', calculate);
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
