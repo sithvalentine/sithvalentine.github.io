@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cost of Waiting Calculator – Wealth Builder Tools</title>
+  <meta name="description" content="See how much wealth you lose by delaying investing. Compare starting at age 18, 22, and 25 side by side — the numbers are eye-opening." />
+
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-6409027472747425">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6409027472747425"
+    crossorigin="anonymous"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a0533 0%, #3b0764 50%, #1a0533 100%);
+      min-height: 100vh;
+      color: #1e1b4b;
+      padding: 28px 12px 60px;
+    }
+
+    /* ── Ad slots ── */
+    .ad-top, .ad-bottom {
+      max-width: 760px;
+      margin: 0 auto 20px;
+      min-height: 90px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .ad-bottom { margin-top: 20px; margin-bottom: 0; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin: 0 auto 18px;
+      max-width: 760px;
+      display: block;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 760px;
+      margin: 0 auto;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 32px; }
+    .header h1 {
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .header p { color: #6b7280; font-size: 0.92rem; }
+
+    /* ── Form grid ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+
+    label.field-label {
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #4b5563;
+    }
+
+    .input-wrap { position: relative; }
+    .input-wrap .prefix, .input-wrap .suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 700;
+      color: #7c3aed;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+    .input-wrap .prefix { left: 13px; }
+    .input-wrap .suffix { right: 13px; }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 13px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 2px solid #e5e7eb;
+      border-radius: 11px;
+      outline: none;
+      color: #111827;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    .form-input:focus {
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
+    }
+    .has-prefix .form-input { padding-left: 30px; }
+    .has-suffix .form-input { padding-right: 36px; }
+
+    /* ── Calculate button ── */
+    .btn-calc {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-bottom: 28px;
+    }
+    .btn-calc:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    /* ── Results ── */
+    .results { display: none; }
+
+    /* ── Scenario Grid ── */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 600px) { .scenario-grid { grid-template-columns: 1fr; } }
+
+    .scenario-card {
+      border-radius: 14px;
+      padding: 20px 16px;
+      border: 2px solid #e5e7eb;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .scenario-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .scenario-best  { border-color: #a7f3d0; background: #ecfdf5; }
+    .scenario-worst { border-color: #fecaca; background: #fef2f2; }
+
+    .sc-age {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111827;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    .sc-years {
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .sc-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .sc-stat-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6b7280;
+      flex-shrink: 0;
+    }
+    .sc-stat-value {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #111827;
+      text-align: right;
+    }
+    .sc-balance { font-size: 1.1rem; color: #7c3aed; }
+
+    /* ── Insight callout ── */
+    .insight-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 28px;
+      background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+      border: 1px solid #c4b5fd;
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .insight-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .insight-text { font-size: 0.95rem; font-weight: 700; color: #4c1d95; line-height: 1.6; }
+
+    /* ── Chart ── */
+    .chart-wrap {
+      position: relative;
+      height: 280px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Info box ── */
+    .info-box {
+      margin-top: 24px;
+      background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+      border: 1px solid #c4b5fd;
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .info-box h3 { font-size: 0.9rem; font-weight: 800; color: #4c1d95; margin-bottom: 8px; }
+    .info-box p  { font-size: 0.82rem; color: #5b21b6; line-height: 1.65; }
+
+    /* ── Content sections ── */
+    .content-section {
+      background: rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 32px 36px;
+      color: #fff;
+      max-width: 760px;
+      margin: 24px auto 0;
+    }
+    .content-section h2 { font-size: 1.56rem; font-weight: 800; margin-bottom: 14px; }
+    .content-section h3 { font-size: 1.19rem; font-weight: 700; margin: 18px 0 6px; }
+    .content-section p  { font-size: 1.13rem; line-height: 1.8; color: rgba(255,255,255,0.88); margin-bottom: 10px; }
+    .content-section p:last-child { margin-bottom: 0; }
+    .content-section ul { padding-left: 20px; margin-top: 8px; }
+    .content-section li { font-size: 1.1rem; color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 6px; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      margin-top: 28px;
+    }
+    footer a { color: rgba(255,255,255,0.65); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Ad -->
+  <div class="ad-top">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-6409027472747425"
+         data-ad-slot="1010101010"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <a class="back-link" href="https://sithvalentine.github.io">← Back to Wealth Builder Tools</a>
+
+  <div class="card">
+
+    <div class="header">
+      <h1>⏰ Cost of Waiting Calculator</h1>
+      <p>See exactly how much wealth you lose by starting to invest later</p>
+    </div>
+
+    <!-- Inputs -->
+    <div class="form-grid">
+
+      <div class="field">
+        <label class="field-label" for="monthly">Monthly Investment</label>
+        <div class="input-wrap has-prefix">
+          <span class="prefix">$</span>
+          <input class="form-input" id="monthly" type="number" min="1" step="50" value="200" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="rate">Annual Return Rate</label>
+        <div class="input-wrap has-suffix">
+          <input class="form-input" id="rate" type="number" min="0.1" max="30" step="0.1" value="7" />
+          <span class="suffix">%</span>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label class="field-label" for="retire-age">Target Retirement Age</label>
+        <div class="input-wrap">
+          <input class="form-input" id="retire-age" type="number" min="26" max="80" step="1" value="65" />
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn-calc" id="btn-calc">Calculate the Cost of Waiting →</button>
+
+    <!-- Results -->
+    <div class="results" id="results">
+
+      <div class="scenario-grid">
+
+        <div class="scenario-card scenario-best">
+          <div class="sc-age">Start at 18</div>
+          <div class="sc-years" id="years-18">— years investing</div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Total Invested</span>
+            <span class="sc-stat-value" id="invested-18">—</span>
+          </div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Final Balance</span>
+            <span class="sc-stat-value sc-balance" id="balance-18">—</span>
+          </div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Interest Earned</span>
+            <span class="sc-stat-value" id="interest-18">—</span>
+          </div>
+        </div>
+
+        <div class="scenario-card">
+          <div class="sc-age">Start at 22</div>
+          <div class="sc-years" id="years-22">— years investing</div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Total Invested</span>
+            <span class="sc-stat-value" id="invested-22">—</span>
+          </div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Final Balance</span>
+            <span class="sc-stat-value sc-balance" id="balance-22">—</span>
+          </div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Interest Earned</span>
+            <span class="sc-stat-value" id="interest-22">—</span>
+          </div>
+        </div>
+
+        <div class="scenario-card scenario-worst">
+          <div class="sc-age">Start at 25</div>
+          <div class="sc-years" id="years-25">— years investing</div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Total Invested</span>
+            <span class="sc-stat-value" id="invested-25">—</span>
+          </div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Final Balance</span>
+            <span class="sc-stat-value sc-balance" id="balance-25">—</span>
+          </div>
+          <div class="sc-stat-row">
+            <span class="sc-stat-label">Interest Earned</span>
+            <span class="sc-stat-value" id="interest-25">—</span>
+          </div>
+        </div>
+
+      </div><!-- /.scenario-grid -->
+
+      <div class="insight-box">
+        <div class="insight-icon">💡</div>
+        <div class="insight-text" id="insight-text">—</div>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="waitingChart"></canvas>
+      </div>
+
+    </div><!-- /#results -->
+
+    <div class="info-box">
+      <h3>💡 Why Starting Early Is So Powerful</h3>
+      <p>
+        Every year you wait to invest is a year of compound growth lost — and those early years are
+        the most valuable. Money invested at 18 has 47 years to compound by retirement age 65.
+        The same dollar invested at 25 only has 40 years. That 7-year gap, multiplied across every
+        contribution you make, can amount to hundreds of thousands of dollars.
+      </p>
+    </div>
+
+  </div><!-- /.card -->
+
+  <!-- Content Section 1 -->
+  <div class="content-section">
+    <h2>The True Cost of Waiting to Invest</h2>
+    <p>Most people know they should invest early — but few truly grasp how dramatic the difference is.
+    The "cost of waiting" isn't just a cliché. It's a real, calculable number that can run into
+    the hundreds of thousands of dollars depending on your investment amount and the return rate.</p>
+    <p>The math behind this is the power of compound interest. When you invest, you earn returns
+    not just on your contributions but on all the accumulated growth from prior years. The earlier
+    you start, the more compounding layers you build. Waiting even four years — from 18 to 22 —
+    can cost you tens of thousands of dollars at retirement.</p>
+    <h3>The 18 vs. 25 Gap</h3>
+    <p>Consider two people who both invest $200/month at a 7% annual return until age 65.
+    The person who starts at 18 invests for 47 years; the one who starts at 25 invests for 40 years.
+    Those 7 extra years of compounding can produce an additional $150,000–$300,000 in final balance —
+    even though the early starter only contributed $16,800 more out of pocket. The rest is
+    pure compound growth working silently in the background.</p>
+    <h3>Why the Early Years Are the Most Valuable</h3>
+    <ul>
+      <li>In the first few years, your contributions dominate your balance.</li>
+      <li>By mid-career, annual interest earned begins to exceed new contributions.</li>
+      <li>In the final decade before retirement, compound growth can dwarf everything else combined.</li>
+      <li>Starting early means your money gets to spend more time in that final, explosive phase.</li>
+    </ul>
+  </div>
+
+  <!-- Content Section 2 -->
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>What if I can only afford a small amount each month?</h3>
+    <p>Start anyway. Even $50/month invested starting at age 18 at 7% grows to over $280,000
+    by age 65. The same $50/month starting at 25 only reaches about $170,000. The amount matters
+    less than the start date. Increase your contributions as your income grows — the habit is
+    the hardest part, and you'll already have it built.</p>
+
+    <h3>What annual return rate is realistic?</h3>
+    <p>The U.S. stock market (S&amp;P 500) has historically averaged approximately 10% per year
+    before inflation, or about 7% after inflation. For conservative long-term planning, 6–7% is
+    a reasonable estimate for a diversified index fund portfolio. Higher or lower returns are possible
+    depending on your investment choices and market conditions.</p>
+
+    <h3>Should I invest in a 401(k) or a Roth IRA first?</h3>
+    <p>If your employer offers a 401(k) match, contribute at least enough to capture the full
+    match first — it's an instant 50–100% return on your money. After that, many financial advisors
+    recommend maxing a Roth IRA before returning to the 401(k), because Roth growth is completely
+    tax-free at withdrawal. In 2025, the Roth IRA contribution limit is $7,000/year.</p>
+
+    <h3>Does this calculator account for taxes or inflation?</h3>
+    <p>No — like most financial calculators, it shows nominal (pre-inflation) returns using your
+    stated rate. For inflation-adjusted projections, reduce your expected return by approximately
+    3% (e.g., use 4% instead of 7%). For tax-advantaged accounts like a Roth IRA or 401(k),
+    nominal returns closely approximate your real take-home growth at retirement.</p>
+  </div>
+
+  <!-- Bottom Ad -->
+  <div class="ad-bottom">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-6409027472747425"
+         data-ad-slot="2020202020"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Wealth Builder Tools &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/privacy-policy.html">Privacy Policy</a> &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/disclaimer.html">Disclaimer</a></p>
+  </footer>
+
+<script>
+  const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+  let chartInstance = null;
+
+  function calcScenario(monthly, annualRate, months) {
+    const monthlyRate = annualRate / 12;
+    let balance = 0;
+    for (let m = 0; m < months; m++) {
+      balance += monthly;
+      balance *= (1 + monthlyRate);
+    }
+    const totalInvested = monthly * months;
+    return {
+      balance,
+      totalInvested,
+      interestEarned: balance - totalInvested
+    };
+  }
+
+  function calculate() {
+    const monthly   = parseFloat(document.getElementById('monthly').value)    || 0;
+    const rate      = parseFloat(document.getElementById('rate').value)       || 0;
+    const retireAge = parseInt(document.getElementById('retire-age').value, 10) || 65;
+
+    if (monthly <= 0 || rate <= 0) return;
+
+    const annualRate = rate / 100;
+    const startAges  = [18, 22, 25];
+    const ids        = ['18', '22', '25'];
+
+    const results = startAges.map(startAge => {
+      if (startAge >= retireAge) {
+        return { balance: 0, totalInvested: 0, interestEarned: 0, years: 0 };
+      }
+      const years  = retireAge - startAge;
+      const months = years * 12;
+      return { ...calcScenario(monthly, annualRate, months), years };
+    });
+
+    results.forEach((r, i) => {
+      const id = ids[i];
+      document.getElementById(`years-${id}`).textContent    = r.years + ' years investing';
+      document.getElementById(`invested-${id}`).textContent = fmt(r.totalInvested);
+      document.getElementById(`balance-${id}`).textContent  = fmt(r.balance);
+      document.getElementById(`interest-${id}`).textContent = fmt(r.interestEarned);
+    });
+
+    // Insight: 18 vs 25 loss
+    const lost        = results[0].balance - results[2].balance;
+    const lostInvested = results[0].totalInvested - results[2].totalInvested;
+    document.getElementById('insight-text').textContent =
+      `By waiting from age 18 to 25, you lose ${fmt(lost)} in potential retirement wealth — ` +
+      `even though starting at 18 only costs ${fmt(lostInvested)} more out of pocket.`;
+
+    // Chart: stacked bar — 3 scenarios
+    if (chartInstance) chartInstance.destroy();
+    const ctx = document.getElementById('waitingChart').getContext('2d');
+    chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Start at 18', 'Start at 22', 'Start at 25'],
+        datasets: [
+          {
+            label: 'Total Invested',
+            data: results.map(r => Math.round(r.totalInvested)),
+            backgroundColor: 'rgba(37,99,235,0.75)',
+            borderRadius: 6,
+            stack: 'stack',
+          },
+          {
+            label: 'Interest Earned',
+            data: results.map(r => Math.round(r.interestEarned)),
+            backgroundColor: 'rgba(124,58,237,0.78)',
+            borderRadius: 6,
+            stack: 'stack',
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { weight: '700', size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label:  (ctx) => ' ' + ctx.dataset.label + ': ' + fmt(ctx.raw),
+              footer: (items) => ' Total: ' + fmt(items.reduce((s, i) => s + i.raw, 0)),
+            }
+          }
+        },
+        scales: {
+          x: { stacked: true, grid: { display: false } },
+          y: {
+            stacked: true,
+            ticks: { callback: (v) => '$' + (v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v) }
+          },
+        },
+      },
+    });
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('btn-calc').addEventListener('click', calculate);
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

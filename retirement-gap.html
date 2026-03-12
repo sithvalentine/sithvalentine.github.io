@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retirement Gap Calculator – Wealth Builder Tools</title>
+  <meta name="description" content="See your projected 401(k) balance at age 40 and find out exactly what monthly contribution you need to hit $1 million." />
+
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-6409027472747425">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6409027472747425"
+    crossorigin="anonymous"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a0533 0%, #3b0764 50%, #1a0533 100%);
+      min-height: 100vh;
+      color: #1e1b4b;
+      padding: 28px 12px 60px;
+    }
+
+    /* ── Ad slots ── */
+    .ad-top, .ad-bottom {
+      max-width: 760px;
+      margin: 0 auto 20px;
+      min-height: 90px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .ad-bottom { margin-top: 20px; margin-bottom: 0; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin: 0 auto 18px;
+      max-width: 760px;
+      display: block;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 760px;
+      margin: 0 auto;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 32px; }
+    .header h1 {
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .header p { color: #6b7280; font-size: 0.92rem; }
+
+    /* ── Form grid ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+
+    label.field-label {
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #4b5563;
+    }
+
+    .input-wrap { position: relative; }
+    .input-wrap .prefix, .input-wrap .suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 700;
+      color: #7c3aed;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+    .input-wrap .prefix { left: 13px; }
+    .input-wrap .suffix { right: 13px; }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 13px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 2px solid #e5e7eb;
+      border-radius: 11px;
+      outline: none;
+      color: #111827;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    .form-input:focus {
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
+    }
+    .has-prefix .form-input { padding-left: 30px; }
+    .has-suffix .form-input { padding-right: 36px; }
+
+    /* ── Calculate button ── */
+    .btn-calc {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-bottom: 28px;
+    }
+    .btn-calc:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    /* ── Results ── */
+    .results { display: none; }
+
+    /* ── Summary grid (4 columns) ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 600px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 380px) { .summary-grid { grid-template-columns: 1fr; } }
+
+    .summary-card {
+      border-radius: 14px;
+      padding: 18px 12px;
+      text-align: center;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .summary-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .summary-card .s-icon { font-size: 1.4rem; margin-bottom: 6px; }
+    .summary-card .s-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 6px; }
+    .summary-card .s-value { font-size: 1.25rem; font-weight: 800; color: #111827; }
+    .summary-card .s-sub { font-size: 0.72rem; color: #9ca3af; margin-top: 2px; }
+
+    /* ── Insight callout ── */
+    .insight-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 28px;
+      background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+      border: 1px solid #c4b5fd;
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .insight-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .insight-text { font-size: 0.95rem; font-weight: 700; color: #4c1d95; line-height: 1.6; }
+
+    /* ── Chart ── */
+    .chart-wrap {
+      position: relative;
+      height: 280px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Info box ── */
+    .info-box {
+      margin-top: 24px;
+      background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+      border: 1px solid #c4b5fd;
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .info-box h3 { font-size: 0.9rem; font-weight: 800; color: #4c1d95; margin-bottom: 8px; }
+    .info-box p  { font-size: 0.82rem; color: #5b21b6; line-height: 1.65; }
+
+    /* ── Content sections ── */
+    .content-section {
+      background: rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 32px 36px;
+      color: #fff;
+      max-width: 760px;
+      margin: 24px auto 0;
+    }
+    .content-section h2 { font-size: 1.56rem; font-weight: 800; margin-bottom: 14px; }
+    .content-section h3 { font-size: 1.19rem; font-weight: 700; margin: 18px 0 6px; }
+    .content-section p  { font-size: 1.13rem; line-height: 1.8; color: rgba(255,255,255,0.88); margin-bottom: 10px; }
+    .content-section p:last-child { margin-bottom: 0; }
+    .content-section ul { padding-left: 20px; margin-top: 8px; }
+    .content-section li { font-size: 1.1rem; color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 6px; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      margin-top: 28px;
+    }
+    footer a { color: rgba(255,255,255,0.65); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Ad -->
+  <div class="ad-top">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-6409027472747425"
+         data-ad-slot="3030303030"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <a class="back-link" href="https://sithvalentine.github.io">← Back to Wealth Builder Tools</a>
+
+  <div class="card">
+
+    <div class="header">
+      <h1>💼 Retirement Gap Calculator</h1>
+      <p>Find out how close you are to $1,000,000 by age 40 — and what it takes to get there</p>
+    </div>
+
+    <!-- Inputs -->
+    <div class="form-grid">
+
+      <div class="field">
+        <label class="field-label" for="current-age">Current Age</label>
+        <div class="input-wrap">
+          <input class="form-input" id="current-age" type="number" min="18" max="39" step="1" placeholder="e.g. 28" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="current-balance">Current 401(k) Balance</label>
+        <div class="input-wrap has-prefix">
+          <span class="prefix">$</span>
+          <input class="form-input" id="current-balance" type="number" min="0" step="500" placeholder="e.g. 25000" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="monthly-contrib">Monthly Contribution (You + Employer)</label>
+        <div class="input-wrap has-prefix">
+          <span class="prefix">$</span>
+          <input class="form-input" id="monthly-contrib" type="number" min="0" step="50" placeholder="e.g. 500" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="return-rate">Expected Annual Return</label>
+        <div class="input-wrap has-suffix">
+          <input class="form-input" id="return-rate" type="number" min="0.1" max="30" step="0.1" value="7" />
+          <span class="suffix">%</span>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn-calc" id="btn-calc">Calculate My Retirement Gap →</button>
+
+    <!-- Results -->
+    <div class="results" id="results">
+
+      <div class="summary-grid">
+
+        <div class="summary-card" style="--accent:#059669;--bg:#ecfdf5;--border:#a7f3d0">
+          <div class="s-icon">📈</div>
+          <div class="s-label">Projected at 40</div>
+          <div class="s-value" id="res-projected">—</div>
+          <div class="s-sub">At current rate</div>
+        </div>
+
+        <div class="summary-card" id="gap-card" style="--accent:#dc2626;--bg:#fef2f2;--border:#fecaca">
+          <div class="s-icon" id="gap-icon">📉</div>
+          <div class="s-label">Gap to $1M</div>
+          <div class="s-value" id="res-gap">—</div>
+          <div class="s-sub" id="res-gap-sub">Shortfall</div>
+        </div>
+
+        <div class="summary-card" style="--accent:#7c3aed;--bg:#f5f3ff;--border:#ddd6fe">
+          <div class="s-icon">💰</div>
+          <div class="s-label">Needed / Month</div>
+          <div class="s-value" id="res-needed">—</div>
+          <div class="s-sub">To hit $1M by 40</div>
+        </div>
+
+        <div class="summary-card" style="--accent:#2563eb;--bg:#eff6ff;--border:#bfdbfe">
+          <div class="s-icon">📅</div>
+          <div class="s-label">Years Remaining</div>
+          <div class="s-value" id="res-years">—</div>
+          <div class="s-sub">Until age 40</div>
+        </div>
+
+      </div>
+
+      <div class="insight-box">
+        <div class="insight-icon">💡</div>
+        <div class="insight-text" id="insight-text">—</div>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="gapChart"></canvas>
+      </div>
+
+    </div><!-- /#results -->
+
+    <div class="info-box">
+      <h3>💡 Why $1 Million by 40?</h3>
+      <p>
+        Reaching $1,000,000 in retirement savings by age 40 is a widely recognized milestone in the
+        FIRE (Financial Independence, Retire Early) community. At a 4% safe withdrawal rate, $1M
+        generates $40,000/year in passive income. Even if you don't plan to retire at 40, hitting
+        this milestone means compound interest continues doing the heavy lifting — significantly
+        reducing what you need to contribute through traditional retirement age.
+      </p>
+    </div>
+
+  </div><!-- /.card -->
+
+  <!-- Content Section 1 -->
+  <div class="content-section">
+    <h2>What Is the Retirement Gap — and Why Age 40 Matters</h2>
+    <p>The "retirement gap" is the difference between what you're on track to have in your
+    retirement accounts and what you actually need to be financially independent. For many people
+    in their 20s and early 30s, the $1 million milestone by age 40 is a powerful, concrete goal
+    that makes the abstract idea of "saving for retirement" tangible and actionable.</p>
+    <p>Here's why age 40 is such a meaningful checkpoint: if you can accumulate $1M by 40,
+    a 7% average annual return will generate $70,000 per year in growth — more than the median
+    U.S. household income — even if you never contribute another dollar. The rest of the path
+    to traditional retirement becomes dramatically easier from that point forward.</p>
+    <h3>The 401(k) Matching Advantage</h3>
+    <p>Many employers match 50–100% of employee contributions up to a certain percentage of salary.
+    That match is an immediate, guaranteed return on your investment — often worth $2,000–$6,000
+    per year in free money. Always contribute at least enough to capture the full employer match
+    before allocating retirement dollars anywhere else.</p>
+    <h3>What "On Track" Actually Looks Like</h3>
+    <ul>
+      <li>By age 30: aim for 1× your annual salary saved in retirement accounts.</li>
+      <li>By age 35: aim for 2× your annual salary saved.</li>
+      <li>By age 40: aim for 3× your annual salary — or $1M if you're targeting early financial independence.</li>
+      <li>These milestones assume a 7% average annual return and consistent contributions over time.</li>
+    </ul>
+  </div>
+
+  <!-- Content Section 2 -->
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>What if I'm older than 35 — is $1M by 40 still realistic?</h3>
+    <p>It depends on your current balance and how much you can contribute. At age 36 with $150,000
+    saved and contributing $2,000/month at 7%, you'd reach approximately $480,000 by 40 — not
+    $1M, but still a strong foundation for long-term wealth. Use this calculator to set a realistic,
+    personalized target rather than comparing yourself to an arbitrary milestone.</p>
+
+    <h3>Should I count my Roth IRA in the balance?</h3>
+    <p>Yes. For the purposes of this calculator, include all tax-advantaged retirement accounts —
+    401(k), Roth IRA, Traditional IRA, 403(b), SEP-IRA, etc. The total picture matters more than
+    which account holds the assets, especially when measuring progress toward a long-term wealth goal.</p>
+
+    <h3>What annual return rate should I use?</h3>
+    <p>For a diversified stock index fund portfolio — such as a target-date fund or S&amp;P 500
+    index fund inside your 401(k) — 7% is a reasonable long-term after-inflation estimate.
+    If your 401(k) is invested conservatively in bonds or stable value funds, use 4–5%.
+    Check your current fund allocation and its historical performance to get a personalized estimate.</p>
+
+    <h3>Does this include Social Security?</h3>
+    <p>No. This calculator focuses exclusively on your personal retirement savings. Social
+    Security, if you qualify, would be an additional income source in retirement. You can check
+    your projected Social Security benefit at ssa.gov using your earnings history — it's a
+    useful supplement to your personal retirement savings plan.</p>
+  </div>
+
+  <!-- Bottom Ad -->
+  <div class="ad-bottom">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-6409027472747425"
+         data-ad-slot="4040404040"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Wealth Builder Tools &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/privacy-policy.html">Privacy Policy</a> &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/disclaimer.html">Disclaimer</a></p>
+  </footer>
+
+<script>
+  const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  const GOAL = 1_000_000;
+  let chartInstance = null;
+
+  function projectGrowth(startBalance, monthlyContrib, annualRate, months) {
+    const monthlyRate = annualRate / 12;
+    let balance = startBalance;
+    const yearlyBalances = [];
+    for (let m = 1; m <= months; m++) {
+      balance += monthlyContrib;
+      balance *= (1 + monthlyRate);
+      if (m % 12 === 0) yearlyBalances.push(Math.round(balance));
+    }
+    return yearlyBalances;
+  }
+
+  function findRequiredMonthly(startBalance, annualRate, months) {
+    const monthlyRate = annualRate / 12;
+    let lo = 0, hi = 100000;
+    for (let iter = 0; iter < 60; iter++) {
+      const mid = (lo + hi) / 2;
+      let balance = startBalance;
+      for (let m = 0; m < months; m++) {
+        balance += mid;
+        balance *= (1 + monthlyRate);
+      }
+      if (balance < GOAL) lo = mid;
+      else hi = mid;
+      if (Math.abs(balance - GOAL) < 100) break;
+    }
+    return Math.ceil((lo + hi) / 2);
+  }
+
+  function calculate() {
+    const currentAge = parseInt(document.getElementById('current-age').value, 10);
+    const balance    = parseFloat(document.getElementById('current-balance').value) || 0;
+    const monthly    = parseFloat(document.getElementById('monthly-contrib').value) || 0;
+    const rate       = parseFloat(document.getElementById('return-rate').value)     || 0;
+
+    if (!currentAge || currentAge >= 40 || rate <= 0) return;
+
+    const annualRate   = rate / 100;
+    const yearsLeft    = 40 - currentAge;
+    const monthsLeft   = yearsLeft * 12;
+
+    const yearlyBalances   = projectGrowth(balance, monthly, annualRate, monthsLeft);
+    const projectedAt40    = yearlyBalances[yearlyBalances.length - 1] || balance;
+    const gap              = Math.max(0, GOAL - projectedAt40);
+    const requiredMonthly  = findRequiredMonthly(balance, annualRate, monthsLeft);
+    const goalBalances     = projectGrowth(balance, requiredMonthly, annualRate, monthsLeft);
+
+    // Summary cards
+    document.getElementById('res-projected').textContent = fmt(projectedAt40);
+    document.getElementById('res-years').textContent     = yearsLeft + ' yrs';
+    document.getElementById('res-needed').textContent    = fmt(requiredMonthly);
+
+    const gapCard = document.getElementById('gap-card');
+    if (gap === 0) {
+      document.getElementById('res-gap').textContent     = 'On Track!';
+      document.getElementById('res-gap-sub').textContent = 'You will exceed $1M';
+      document.getElementById('gap-icon').textContent    = '🎯';
+      gapCard.style.setProperty('--accent', '#059669');
+      gapCard.style.setProperty('--bg',     '#ecfdf5');
+      gapCard.style.setProperty('--border', '#a7f3d0');
+    } else {
+      document.getElementById('res-gap').textContent     = fmt(gap);
+      document.getElementById('res-gap-sub').textContent = 'Shortfall at age 40';
+      document.getElementById('gap-icon').textContent    = '📉';
+      gapCard.style.setProperty('--accent', '#dc2626');
+      gapCard.style.setProperty('--bg',     '#fef2f2');
+      gapCard.style.setProperty('--border', '#fecaca');
+    }
+
+    // Insight
+    const extraNeeded = requiredMonthly - monthly;
+    document.getElementById('insight-text').textContent = gap === 0
+      ? `Great news! At your current contribution rate you are on pace to exceed $1,000,000 by age 40. Keep it up!`
+      : `To close the ${fmt(gap)} gap, you need to increase your monthly contribution by ${fmt(extraNeeded)} — from ${fmt(monthly)} to ${fmt(requiredMonthly)}/month.`;
+
+    // Labels: Age 29, Age 30, ... Age 40
+    const labels = [];
+    for (let age = currentAge + 1; age <= 40; age++) labels.push('Age ' + age);
+    const goalLine = new Array(yearsLeft).fill(GOAL);
+
+    // Chart: line chart
+    if (chartInstance) chartInstance.destroy();
+    const ctx = document.getElementById('gapChart').getContext('2d');
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'At Current Rate',
+            data: yearlyBalances,
+            borderColor: 'rgba(37,99,235,0.9)',
+            backgroundColor: 'rgba(37,99,235,0.08)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3,
+          },
+          {
+            label: 'To Hit $1M',
+            data: goalBalances,
+            borderColor: 'rgba(124,58,237,0.9)',
+            backgroundColor: 'rgba(124,58,237,0.06)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3,
+            borderDash: [6, 3],
+          },
+          {
+            label: '$1M Goal',
+            data: goalLine,
+            borderColor: 'rgba(220,38,38,0.7)',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [4, 4],
+            fill: false,
+            pointRadius: 0,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { weight: '700', size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ' ' + ctx.dataset.label + ': ' + fmt(ctx.raw),
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            ticks: { callback: (v) => '$' + (v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v) }
+          },
+        },
+      },
+    });
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('btn-calc').addEventListener('click', calculate);
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
