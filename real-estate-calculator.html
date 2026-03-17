@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Estate Investment Calculator – Wealth Builder Tools</title>
+  <meta name="description" content="Free real estate investment calculator. Analyze rental property cash flow, cap rate, cash-on-cash return, closing costs, rehab budget, equity growth, and break-even timeline." />
+
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-6409027472747425">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6409027472747425"
+    crossorigin="anonymous"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a0533 0%, #3b0764 50%, #1a0533 100%);
+      min-height: 100vh;
+      color: #1e1b4b;
+      padding: 28px 12px 60px;
+    }
+
+    /* ── Ad slots ── */
+    .ad-top, .ad-bottom {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      min-height: 90px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .ad-bottom { margin-top: 20px; margin-bottom: 0; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: block;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin: 0 auto 18px;
+      max-width: 900px;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── Main card ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 900px;
+      margin: 0 auto;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+
+    /* ── Page header ── */
+    .page-header { text-align: center; margin-bottom: 36px; }
+    .page-header h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .page-header p { color: #6b7280; font-size: 0.92rem; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 32px; }
+    .section-header {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #374151;
+      border-left: 4px solid #7c3aed;
+      padding-left: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-header .s-icon { font-size: 1.1rem; }
+
+    /* ── Form grid ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 660px) { .form-grid.cols-3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 400px) { .form-grid.cols-3 { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field.full { grid-column: 1 / -1; }
+
+    label.field-label {
+      font-weight: 700;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #4b5563;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── +/− badges on labels ── */
+    .badge-add {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .badge-sub {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .input-wrap { position: relative; }
+    .input-wrap .prefix, .input-wrap .suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 700;
+      color: #7c3aed;
+      font-size: 0.95rem;
+      pointer-events: none;
+    }
+    .input-wrap .prefix { left: 11px; }
+    .input-wrap .suffix { right: 11px; }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 11px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      outline: none;
+      color: #111827;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    .form-input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+    .form-input[readonly] { background: #f9fafb; color: #6b7280; cursor: default; }
+    .has-prefix .form-input { padding-left: 26px; }
+    .has-suffix .form-input { padding-right: 32px; }
+    select.form-input { cursor: pointer; }
+
+    /* ── Computed result rows ── */
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .result-row.positive { background: #ecfdf5; border: 1px solid #a7f3d0; }
+    .result-row.neutral  { background: #f5f3ff; border: 1px solid #ddd6fe; }
+    .result-row.total    { background: #1e1b4b; }
+    .result-row .r-label { font-size: 0.82rem; font-weight: 700; color: #374151; }
+    .result-row.total .r-label { color: rgba(255,255,255,0.8); }
+    .result-row .r-value { font-size: 1.05rem; font-weight: 800; color: #7c3aed; }
+    .result-row.total .r-value { color: #fff; font-size: 1.15rem; }
+    .result-row.positive .r-value { color: #059669; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 2px dashed #e5e7eb; margin: 28px 0; }
+
+    /* ── Cash flow ledger ── */
+    .cf-ledger {
+      border: 2px solid #e5e7eb;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .cf-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      gap: 10px;
+    }
+    .cf-row:last-child { border-bottom: none; }
+    .cf-label { font-size: 0.85rem; color: #374151; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+    .cf-amount { font-size: 0.9rem; font-weight: 800; }
+    .cf-row.add .cf-amount  { color: #059669; }
+    .cf-row.sub .cf-amount  { color: #dc2626; }
+    .cf-row.net-positive { background: #ecfdf5; }
+    .cf-row.net-negative { background: #fef2f2; }
+    .cf-row.net-positive .cf-label, .cf-row.net-negative .cf-label { font-size: 0.9rem; font-weight: 800; color: #111827; }
+    .cf-row.net-positive .cf-amount { color: #059669; font-size: 1.1rem; }
+    .cf-row.net-negative .cf-amount { color: #dc2626; font-size: 1.1rem; }
+    .cf-row.annual { background: #f5f3ff; border-top: 2px solid #ddd6fe; }
+    .cf-row.annual .cf-label { font-weight: 700; color: #4c1d95; }
+    .cf-row.annual .cf-amount { color: #7c3aed; font-size: 0.95rem; }
+    .cf-sep { height: 2px; background: #e5e7eb; }
+
+    /* ── Returns grid ── */
+    .returns-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 640px) { .returns-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .return-card {
+      border-radius: 13px;
+      padding: 16px 12px;
+      text-align: center;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      transition: transform 0.15s;
+    }
+    .return-card:hover { transform: translateY(-2px); }
+    .return-card .rc-icon  { font-size: 1.4rem; margin-bottom: 5px; }
+    .return-card .rc-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 5px; }
+    .return-card .rc-value { font-size: 1.3rem; font-weight: 800; color: #111827; }
+    .return-card .rc-sub   { font-size: 0.7rem; color: #9ca3af; margin-top: 2px; }
+
+    /* ── Chart ── */
+    .chart-wrap { position: relative; height: 260px; margin-top: 20px; }
+
+    /* ── Break-even ── */
+    .breakeven-box {
+      background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+      border: 1px solid #c4b5fd;
+      border-radius: 14px;
+      padding: 20px 24px;
+    }
+    .breakeven-stats { display: flex; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+    .be-stat { display: flex; flex-direction: column; gap: 3px; }
+    .be-stat .be-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; }
+    .be-stat .be-value { font-size: 1.3rem; font-weight: 800; color: #4c1d95; }
+    .progress-wrap { background: rgba(0,0,0,0.08); border-radius: 99px; height: 10px; overflow: hidden; }
+    .progress-bar  { height: 100%; background: linear-gradient(135deg, #7c3aed, #4f46e5); border-radius: 99px; transition: width 0.6s ease; }
+    .progress-label { font-size: 0.75rem; color: #5b21b6; font-weight: 600; margin-top: 6px; }
+    .negative-cf-msg { font-size: 0.88rem; color: #991b1b; font-weight: 700; padding: 12px 16px; background: #fef2f2; border-radius: 10px; border: 1px solid #fecaca; }
+
+    /* ── Analyze button ── */
+    .btn-analyze {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 13px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s, transform 0.15s;
+      margin: 8px 0 28px;
+    }
+    .btn-analyze:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    /* ── Results panel ── */
+    .results { display: none; }
+
+    /* ── Appreciation inputs ── */
+    .appr-inputs { display: flex; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+    .appr-inputs .field { flex: 1; min-width: 140px; }
+
+    /* ── Info box ── */
+    .info-box {
+      margin-top: 24px;
+      background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+      border: 1px solid #c4b5fd;
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .info-box h3 { font-size: 0.88rem; font-weight: 800; color: #4c1d95; margin-bottom: 6px; }
+    .info-box p  { font-size: 0.8rem; color: #5b21b6; line-height: 1.65; }
+
+    /* ── Content sections ── */
+    .content-section {
+      background: rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 32px 36px;
+      color: #fff;
+      max-width: 900px;
+      margin: 24px auto 0;
+    }
+    .content-section h2 { font-size: 1.56rem; font-weight: 800; margin-bottom: 14px; }
+    .content-section h3 { font-size: 1.19rem; font-weight: 700; margin: 18px 0 6px; }
+    .content-section p  { font-size: 1.13rem; line-height: 1.8; color: rgba(255,255,255,0.88); margin-bottom: 10px; }
+    .content-section p:last-child { margin-bottom: 0; }
+    .content-section ul { padding-left: 20px; margin-top: 8px; }
+    .content-section li { font-size: 1.1rem; color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 6px; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      margin-top: 28px;
+    }
+    footer a { color: rgba(255,255,255,0.65); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Ad -->
+  <div class="ad-top">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-6409027472747425"
+         data-ad-slot="5050505050"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <a class="back-link" href="https://sithvalentine.github.io">← Back to Wealth Builder Tools</a>
+
+  <div class="card">
+
+    <div class="page-header">
+      <h1>🏠 Real Estate Investment Calculator</h1>
+      <p>Analyze any rental property — cash flow, returns, equity growth, and break-even all in one place</p>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SECTION 1: Property & Purchase Details -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header"><span class="s-icon">🏡</span> Property &amp; Purchase Details</div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label class="field-label" for="purchase-price">Purchase Price</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="purchase-price" type="number" min="0" step="1000" placeholder="e.g. 300000" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="down-payment">Down Payment</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="down-payment" type="number" min="0" step="1000" placeholder="e.g. 60000" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="loan-amount">Loan Amount <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(auto)</span></label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="loan-amount" type="number" readonly placeholder="—" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="down-pct">Down Payment %</label>
+          <div class="input-wrap has-suffix">
+            <input class="form-input" id="down-pct" type="number" readonly placeholder="—" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="interest-rate">Interest Rate</label>
+          <div class="input-wrap has-suffix">
+            <input class="form-input" id="interest-rate" type="number" min="0" max="30" step="0.1" placeholder="e.g. 7.0" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="loan-term">Loan Term</label>
+          <select class="form-input" id="loan-term">
+            <option value="30" selected>30 Years</option>
+            <option value="25">25 Years</option>
+            <option value="20">20 Years</option>
+            <option value="15">15 Years</option>
+            <option value="10">10 Years</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label class="field-label" for="property-type">Property Type</label>
+          <select class="form-input" id="property-type">
+            <option value="single">Single Family</option>
+            <option value="multi">Multi-Family</option>
+            <option value="condo">Condo / Townhome</option>
+            <option value="commercial">Commercial</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ══════════════════════════════════ -->
+    <!-- SECTION 2: Closing Costs          -->
+    <!-- ══════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header"><span class="s-icon">📋</span> Closing Costs <span style="font-size:0.75rem;font-weight:600;color:#6b7280;border-left:none;padding-left:0">— each item below is <strong style="color:#065f46">added</strong> to your total</span></div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label class="field-label" for="origination-fee"><span class="badge-add">+</span> Loan Origination Fee</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="origination-fee" type="number" min="0" step="100" placeholder="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="appraisal-fee"><span class="badge-add">+</span> Appraisal Fee</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="appraisal-fee" type="number" min="0" step="50" value="500" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="title-insurance"><span class="badge-add">+</span> Title Insurance</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="title-insurance" type="number" min="0" step="100" value="1000" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="inspection-fee"><span class="badge-add">+</span> Home Inspection</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="inspection-fee" type="number" min="0" step="50" value="400" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="attorney-fees"><span class="badge-add">+</span> Attorney / Escrow Fees</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="attorney-fees" type="number" min="0" step="100" value="750" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="other-closing"><span class="badge-add">+</span> Other Closing Costs</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="other-closing" type="number" min="0" step="100" value="0" />
+          </div>
+        </div>
+
+      </div>
+      <div class="result-row neutral">
+        <span class="r-label">Total Closing Costs</span>
+        <span class="r-value" id="total-closing">—</span>
+      </div>
+      <div class="result-row positive">
+        <span class="r-label">💵 Total Cash Needed to Close &nbsp;<small style="font-weight:400;color:#6b7280">(Down Payment + Closing Costs)</small></span>
+        <span class="r-value" id="total-cash-close">—</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SECTION 3: Rehab / Renovation Budget  -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header"><span class="s-icon">🔨</span> Rehab / Renovation Budget <span style="font-size:0.75rem;font-weight:600;color:#6b7280;border-left:none;padding-left:0">— items <strong style="color:#065f46">added</strong> to get total rehab cost</span></div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label class="field-label" for="rehab-structural"><span class="badge-add">+</span> Structural / Foundation</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="rehab-structural" type="number" min="0" step="500" value="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="rehab-roof"><span class="badge-add">+</span> Roof &amp; Exterior</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="rehab-roof" type="number" min="0" step="500" value="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="rehab-kitchen"><span class="badge-add">+</span> Kitchen &amp; Bathrooms</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="rehab-kitchen" type="number" min="0" step="500" value="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="rehab-flooring"><span class="badge-add">+</span> Flooring &amp; Interior</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="rehab-flooring" type="number" min="0" step="500" value="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="rehab-hvac"><span class="badge-add">+</span> HVAC / Electrical / Plumbing</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="rehab-hvac" type="number" min="0" step="500" value="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="rehab-other"><span class="badge-add">+</span> Landscaping &amp; Other</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="rehab-other" type="number" min="0" step="500" value="0" />
+          </div>
+        </div>
+
+        <div class="field full">
+          <label class="field-label" for="arv">After Repair Value (ARV)</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="arv" type="number" min="0" step="1000" placeholder="Estimated value after renovations" />
+          </div>
+        </div>
+
+      </div>
+      <div class="result-row neutral">
+        <span class="r-label">Total Rehab Cost</span>
+        <span class="r-value" id="total-rehab">$0</span>
+      </div>
+      <div class="result-row positive">
+        <span class="r-label">✨ Equity Created &nbsp;<small style="font-weight:400;color:#6b7280">(ARV − Purchase Price − Rehab Cost)</small></span>
+        <span class="r-value" id="equity-created">—</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SECTION 4: Rental Income              -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header"><span class="s-icon">💰</span> Rental Income</div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label class="field-label" for="gross-rent"><span class="badge-add">+</span> Gross Monthly Rent</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="gross-rent" type="number" min="0" step="50" placeholder="e.g. 2500" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="other-income"><span class="badge-add">+</span> Other Monthly Income</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="other-income" type="number" min="0" step="25" value="0" placeholder="Parking, laundry, etc." />
+          </div>
+        </div>
+
+      </div>
+      <div class="result-row positive">
+        <span class="r-label">Total Gross Monthly Income</span>
+        <span class="r-value" id="total-gross-income">—</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SECTION 5: Operating Expenses         -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header"><span class="s-icon">📉</span> Operating Expenses <span style="font-size:0.75rem;font-weight:600;color:#6b7280;border-left:none;padding-left:0">— each item is <strong style="color:#991b1b">subtracted</strong> from your income</span></div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label class="field-label" for="prop-tax"><span class="badge-sub">−</span> Property Tax ($/mo)</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="prop-tax" type="number" min="0" step="25" placeholder="e.g. 250" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="insurance"><span class="badge-sub">−</span> Insurance ($/mo)</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="insurance" type="number" min="0" step="10" placeholder="e.g. 100" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="hoa"><span class="badge-sub">−</span> HOA Fees ($/mo)</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="hoa" type="number" min="0" step="10" value="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="utilities"><span class="badge-sub">−</span> Utilities ($/mo)</label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="utilities" type="number" min="0" step="10" value="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="mgmt-pct"><span class="badge-sub">−</span> Property Management (%)</label>
+          <div class="input-wrap has-suffix">
+            <input class="form-input" id="mgmt-pct" type="number" min="0" max="30" step="0.5" value="10" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="maintenance-pct"><span class="badge-sub">−</span> Maintenance Reserve (%)</label>
+          <div class="input-wrap has-suffix">
+            <input class="form-input" id="maintenance-pct" type="number" min="0" max="20" step="0.5" value="5" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="vacancy-pct"><span class="badge-sub">−</span> Vacancy Allowance (%)</label>
+          <div class="input-wrap has-suffix">
+            <input class="form-input" id="vacancy-pct" type="number" min="0" max="30" step="0.5" value="8" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="result-row neutral" style="--border:#ddd6fe;--bg:#f5f3ff">
+        <span class="r-label">Total Operating Expenses / Month</span>
+        <span class="r-value" id="total-opex">—</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SECTION 6: Financing Obligations      -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header"><span class="s-icon">🏦</span> Financing Obligations <span style="font-size:0.75rem;font-weight:600;color:#6b7280;border-left:none;padding-left:0">— <strong style="color:#991b1b">subtracted</strong> from gross income</span></div>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label" for="monthly-mortgage"><span class="badge-sub">−</span> Monthly Mortgage Payment <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(auto)</span></label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="monthly-mortgage" type="number" readonly placeholder="—" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Total Monthly Obligations <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(auto)</span></label>
+          <div class="input-wrap has-prefix">
+            <span class="prefix">$</span>
+            <input class="form-input" id="total-obligations" type="number" readonly placeholder="—" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-analyze" id="btn-analyze">Analyze This Investment →</button>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- RESULTS PANEL                         -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="results" id="results">
+
+      <hr class="divider" />
+
+      <!-- Cash Flow Ledger -->
+      <div class="section">
+        <div class="section-header"><span class="s-icon">📊</span> Monthly Cash Flow Breakdown</div>
+        <div class="cf-ledger">
+          <div class="cf-row add">
+            <span class="cf-label"><span class="badge-add">+</span> Gross Monthly Rent</span>
+            <span class="cf-amount" id="cf-rent">—</span>
+          </div>
+          <div class="cf-row add">
+            <span class="cf-label"><span class="badge-add">+</span> Other Income</span>
+            <span class="cf-amount" id="cf-other-income">—</span>
+          </div>
+          <div class="cf-sep"></div>
+          <div class="cf-row sub">
+            <span class="cf-label"><span class="badge-sub">−</span> Property Tax</span>
+            <span class="cf-amount" id="cf-tax">—</span>
+          </div>
+          <div class="cf-row sub">
+            <span class="cf-label"><span class="badge-sub">−</span> Insurance</span>
+            <span class="cf-amount" id="cf-insurance">—</span>
+          </div>
+          <div class="cf-row sub" id="cf-hoa-row">
+            <span class="cf-label"><span class="badge-sub">−</span> HOA Fees</span>
+            <span class="cf-amount" id="cf-hoa">—</span>
+          </div>
+          <div class="cf-row sub" id="cf-util-row">
+            <span class="cf-label"><span class="badge-sub">−</span> Utilities</span>
+            <span class="cf-amount" id="cf-util">—</span>
+          </div>
+          <div class="cf-row sub">
+            <span class="cf-label"><span class="badge-sub">−</span> Property Management</span>
+            <span class="cf-amount" id="cf-mgmt">—</span>
+          </div>
+          <div class="cf-row sub">
+            <span class="cf-label"><span class="badge-sub">−</span> Maintenance Reserve</span>
+            <span class="cf-amount" id="cf-maint">—</span>
+          </div>
+          <div class="cf-row sub">
+            <span class="cf-label"><span class="badge-sub">−</span> Vacancy Allowance</span>
+            <span class="cf-amount" id="cf-vacancy">—</span>
+          </div>
+          <div class="cf-sep"></div>
+          <div class="cf-row sub">
+            <span class="cf-label"><span class="badge-sub">−</span> Mortgage Payment</span>
+            <span class="cf-amount" id="cf-mortgage">—</span>
+          </div>
+          <div class="cf-sep"></div>
+          <div class="cf-row" id="cf-net-row">
+            <span class="cf-label" style="font-size:0.92rem;font-weight:800;color:#111827;">Net Monthly Cash Flow</span>
+            <span class="cf-amount" id="cf-net" style="font-size:1.15rem;font-weight:800;">—</span>
+          </div>
+          <div class="cf-row annual">
+            <span class="cf-label">Annual Cash Flow</span>
+            <span class="cf-amount" id="cf-annual">—</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Investment Returns -->
+      <div class="section">
+        <div class="section-header"><span class="s-icon">📈</span> Investment Returns</div>
+        <div class="returns-grid">
+          <div class="return-card" style="--accent:#059669;--bg:#ecfdf5;--border:#a7f3d0">
+            <div class="rc-icon">📊</div>
+            <div class="rc-label">Cap Rate</div>
+            <div class="rc-value" id="ret-cap-rate">—</div>
+            <div class="rc-sub">NOI ÷ Purchase Price</div>
+          </div>
+          <div class="return-card" style="--accent:#7c3aed;--bg:#f5f3ff;--border:#ddd6fe">
+            <div class="rc-icon">💵</div>
+            <div class="rc-label">Cash-on-Cash</div>
+            <div class="rc-value" id="ret-coc">—</div>
+            <div class="rc-sub">Annual CF ÷ Cash Invested</div>
+          </div>
+          <div class="return-card" style="--accent:#2563eb;--bg:#eff6ff;--border:#bfdbfe">
+            <div class="rc-icon">✖️</div>
+            <div class="rc-label">Gross Rent Multiplier</div>
+            <div class="rc-value" id="ret-grm">—</div>
+            <div class="rc-sub">Price ÷ Annual Gross Rent</div>
+          </div>
+          <div class="return-card" style="--accent:#d97706;--bg:#fffbeb;--border:#fde68a">
+            <div class="rc-icon">🏦</div>
+            <div class="rc-label">Net Operating Income</div>
+            <div class="rc-value" id="ret-noi">—</div>
+            <div class="rc-sub">Annual (excl. mortgage)</div>
+          </div>
+        </div>
+
+        <div class="info-box" style="margin-top:16px">
+          <h3>📌 Benchmarks to Know</h3>
+          <p>A good cap rate is typically <strong>5–10%</strong> depending on market. Cash-on-cash return of <strong>8%+</strong> is generally considered strong. GRM below <strong>10</strong> often signals a good deal in affordable markets.</p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Equity & Appreciation -->
+      <div class="section">
+        <div class="section-header"><span class="s-icon">📐</span> Equity &amp; Appreciation Projection</div>
+        <div class="appr-inputs">
+          <div class="field">
+            <label class="field-label" for="appr-rate">Annual Appreciation Rate</label>
+            <div class="input-wrap has-suffix">
+              <input class="form-input" id="appr-rate" type="number" min="0" max="20" step="0.5" value="3" />
+              <span class="suffix">%</span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="proj-years">Projection Period</label>
+            <select class="form-input" id="proj-years">
+              <option value="5">5 Years</option>
+              <option value="10" selected>10 Years</option>
+              <option value="15">15 Years</option>
+              <option value="20">20 Years</option>
+              <option value="30">30 Years</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="returns-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+          <div class="return-card" style="--accent:#059669;--bg:#ecfdf5;--border:#a7f3d0">
+            <div class="rc-icon">🏠</div>
+            <div class="rc-label">Projected Value</div>
+            <div class="rc-value" id="appr-value">—</div>
+            <div class="rc-sub" id="appr-value-sub">At year N</div>
+          </div>
+          <div class="return-card" style="--accent:#7c3aed;--bg:#f5f3ff;--border:#ddd6fe">
+            <div class="rc-icon">💎</div>
+            <div class="rc-label">Projected Equity</div>
+            <div class="rc-value" id="appr-equity">—</div>
+            <div class="rc-sub" id="appr-equity-sub">Value − Loan Balance</div>
+          </div>
+          <div class="return-card" style="--accent:#d97706;--bg:#fffbeb;--border:#fde68a">
+            <div class="rc-icon">📈</div>
+            <div class="rc-label">Appreciation Gain</div>
+            <div class="rc-value" id="appr-gain">—</div>
+            <div class="rc-sub">Total price increase</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="equityChart"></canvas>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Break-Even Analysis -->
+      <div class="section">
+        <div class="section-header"><span class="s-icon">⚖️</span> Break-Even Analysis</div>
+        <div id="breakeven-content"></div>
+      </div>
+
+    </div><!-- /#results -->
+
+    <div class="info-box" style="margin-top:8px">
+      <h3>💡 How to Use This Calculator</h3>
+      <p>Fill in the purchase details and rental income fields, then click "Analyze This Investment." The calculator automatically computes your mortgage payment, cash flow, returns, and equity projection. All +/− indicators show exactly how each line item contributes to or reduces your bottom line.</p>
+    </div>
+
+  </div><!-- /.card -->
+
+  <!-- Content Section 1 -->
+  <div class="content-section">
+    <h2>How to Analyze a Rental Property Investment</h2>
+    <p>Buying a rental property is one of the most powerful ways to build long-term wealth — but only if the numbers work. Too many investors fall in love with a property without running the math, only to discover that after mortgage payments, taxes, insurance, maintenance, and vacancy, they're losing money every month. This calculator helps you avoid that mistake by giving you the full picture before you commit.</p>
+    <p>The most important number to understand is your <strong>net monthly cash flow</strong>: the amount of money left over each month after every expense has been paid. Positive cash flow means the property pays you. Negative cash flow means you're subsidizing it — which may be acceptable if appreciation is strong, but it's a risk you need to understand upfront.</p>
+    <h3>Cap Rate vs. Cash-on-Cash Return</h3>
+    <p>These two metrics measure return differently. <strong>Cap rate</strong> measures the property's return independent of financing — it compares net operating income to purchase price. A higher cap rate means more income relative to cost. <strong>Cash-on-cash return</strong> measures the return on your actual out-of-pocket investment (down payment + closing costs + rehab). It accounts for leverage, which is why a financed property can show a higher cash-on-cash return than a cap rate alone suggests.</p>
+    <h3>Why Closing Costs and Rehab Matter</h3>
+    <p>First-time investors often underestimate how much cash it takes to close a deal. Origination fees, title insurance, appraisals, and inspections can add $3,000–$8,000 or more to your out-of-pocket costs. Add rehab expenses — even modest cosmetic updates — and your total investment can be 20–30% higher than the down payment alone. Every dollar of additional upfront cost lowers your cash-on-cash return and extends your break-even timeline.</p>
+    <ul>
+      <li>Always budget a maintenance reserve of at least 5% of monthly rent for unexpected repairs.</li>
+      <li>Budget 8–10% vacancy — even great properties have turnover periods between tenants.</li>
+      <li>If you plan to self-manage, still model a property management fee (8–12%) as a sanity check on returns.</li>
+      <li>Use the After Repair Value (ARV) field to calculate equity created through value-add rehab projects.</li>
+    </ul>
+  </div>
+
+  <!-- Content Section 2 -->
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>What is a good cap rate for a rental property?</h3>
+    <p>Cap rate benchmarks vary by market. In high-demand urban markets (New York, San Francisco, Los Angeles), cap rates of 3–5% are common because appreciation is the primary return driver. In secondary and tertiary markets, investors often target 6–10%. As a general rule: a cap rate below 5% is considered low, 5–8% is moderate, and above 8% is strong — but always compare to local market norms, not national averages.</p>
+
+    <h3>What is a good cash-on-cash return?</h3>
+    <p>Most experienced real estate investors target a minimum of 8% cash-on-cash return. Returns of 10–15% are considered strong for residential rental properties. Returns below 6% may still be acceptable if the property is in a high-appreciation market or if you're building equity rapidly through debt paydown. Compare your cash-on-cash return to other investment options — if the stock market is averaging 10%, your rental property should offer comparable returns plus the benefits of leverage and depreciation.</p>
+
+    <h3>How do I estimate rehab costs accurately?</h3>
+    <p>The safest approach is to get contractor estimates before closing. For a quick pre-offer estimate, many investors use cost-per-square-foot rules: light cosmetic rehab runs $10–$25/sqft, moderate rehab $25–$50/sqft, and heavy rehab (systems replacement, structural work) can run $50–$100+/sqft. Always add a 10–20% contingency buffer — renovation projects almost always encounter surprises. The ARV field in this calculator lets you see whether the equity created justifies the rehab investment.</p>
+
+    <h3>What vacancy rate should I use?</h3>
+    <p>A standard vacancy allowance is 5–10% of gross rent. In strong rental markets with low supply, 5% may be realistic. In markets with higher turnover or seasonal demand, 10–12% is more conservative and appropriate. Using 8% (roughly one month vacant per year) is a reasonable default for most markets. Always underestimate income and overestimate expenses when running your initial analysis — if the deal still looks good on conservative numbers, it's a solid investment.</p>
+
+    <h3>Should I factor in mortgage principal paydown?</h3>
+    <p>Yes — this is one of the often-overlooked returns of rental property. Every mortgage payment reduces your loan balance, building equity even if the property doesn't appreciate. Over a 30-year loan at typical rates, roughly 20–30% of your early payments go toward principal, increasing each year. The equity chart in this calculator shows your projected loan balance paydown alongside appreciation, giving you a complete picture of total wealth-building over time.</p>
+  </div>
+
+  <!-- Bottom Ad -->
+  <div class="ad-bottom">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-6409027472747425"
+         data-ad-slot="6060606060"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Wealth Builder Tools &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/privacy-policy.html">Privacy Policy</a> &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/disclaimer.html">Disclaimer</a></p>
+  </footer>
+
+<script>
+  const fmt  = (n) => '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
+  const fmtD = (n) => (n >= 0 ? '+$' : '−$') + Math.round(Math.abs(n)).toLocaleString('en-US');
+  const pct  = (n) => n.toFixed(2) + '%';
+
+  let equityChartInstance = null;
+
+  /* ── Mortgage payment formula ── */
+  function calcMonthlyPayment(principal, annualRate, years) {
+    if (!principal || !years) return 0;
+    if (!annualRate) return principal / (years * 12);
+    const r = annualRate / 100 / 12;
+    const n = years * 12;
+    return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  }
+
+  /* ── Amortization — return array of year-end balances ── */
+  function buildAmortization(principal, annualRate, years) {
+    if (!principal || !years) return [];
+    const r   = annualRate > 0 ? annualRate / 100 / 12 : 0;
+    const pmt = calcMonthlyPayment(principal, annualRate, years);
+    let balance = principal;
+    const out = [];
+    for (let m = 1; m <= years * 12; m++) {
+      const interest = balance * r;
+      balance = Math.max(0, balance - (pmt - interest));
+      if (m % 12 === 0) out.push(balance);
+    }
+    return out;
+  }
+
+  /* ── Live auto-compute as user types ── */
+  function liveUpdate() {
+    const purchasePrice  = parseFloat(document.getElementById('purchase-price').value)  || 0;
+    const downPayment    = parseFloat(document.getElementById('down-payment').value)     || 0;
+    const interestRate   = parseFloat(document.getElementById('interest-rate').value)    || 0;
+    const loanTerm       = parseInt(document.getElementById('loan-term').value, 10)      || 30;
+    const grossRent      = parseFloat(document.getElementById('gross-rent').value)       || 0;
+    const otherIncome    = parseFloat(document.getElementById('other-income').value)     || 0;
+    const mgmtPct        = parseFloat(document.getElementById('mgmt-pct').value)        || 0;
+    const maintPct       = parseFloat(document.getElementById('maintenance-pct').value)  || 0;
+    const vacancyPct     = parseFloat(document.getElementById('vacancy-pct').value)      || 0;
+
+    // Loan amount
+    const loanAmount = Math.max(0, purchasePrice - downPayment);
+    document.getElementById('loan-amount').value = loanAmount || '';
+    document.getElementById('down-pct').value = purchasePrice > 0 ? (downPayment / purchasePrice * 100).toFixed(1) : '';
+
+    // Closing costs
+    const origFee   = parseFloat(document.getElementById('origination-fee').value) || 0;
+    const apprFee   = parseFloat(document.getElementById('appraisal-fee').value)   || 0;
+    const titleIns  = parseFloat(document.getElementById('title-insurance').value) || 0;
+    const inspFee   = parseFloat(document.getElementById('inspection-fee').value)  || 0;
+    const attyFee   = parseFloat(document.getElementById('attorney-fees').value)   || 0;
+    const otherCC   = parseFloat(document.getElementById('other-closing').value)   || 0;
+    const totalCC   = origFee + apprFee + titleIns + inspFee + attyFee + otherCC;
+    const totalCashClose = downPayment + totalCC;
+    document.getElementById('total-closing').textContent    = fmt(totalCC);
+    document.getElementById('total-cash-close').textContent = fmt(totalCashClose);
+
+    // Rehab
+    const rehabStructural = parseFloat(document.getElementById('rehab-structural').value) || 0;
+    const rehabRoof       = parseFloat(document.getElementById('rehab-roof').value)       || 0;
+    const rehabKitchen    = parseFloat(document.getElementById('rehab-kitchen').value)    || 0;
+    const rehabFlooring   = parseFloat(document.getElementById('rehab-flooring').value)   || 0;
+    const rehabHvac       = parseFloat(document.getElementById('rehab-hvac').value)       || 0;
+    const rehabOther      = parseFloat(document.getElementById('rehab-other').value)      || 0;
+    const arv             = parseFloat(document.getElementById('arv').value)              || 0;
+    const totalRehab = rehabStructural + rehabRoof + rehabKitchen + rehabFlooring + rehabHvac + rehabOther;
+    document.getElementById('total-rehab').textContent = fmt(totalRehab);
+    if (arv > 0) {
+      const equityCreated = arv - purchasePrice - totalRehab;
+      document.getElementById('equity-created').textContent = (equityCreated >= 0 ? '+' : '−') + '$' + Math.round(Math.abs(equityCreated)).toLocaleString('en-US');
+      document.getElementById('equity-created').style.color = equityCreated >= 0 ? '#059669' : '#dc2626';
+    } else {
+      document.getElementById('equity-created').textContent = '—';
+      document.getElementById('equity-created').style.color = '';
+    }
+
+    // Income
+    const totalIncome = grossRent + otherIncome;
+    document.getElementById('total-gross-income').textContent = fmt(totalIncome);
+
+    // Operating expenses
+    const propTax    = parseFloat(document.getElementById('prop-tax').value)  || 0;
+    const insurance  = parseFloat(document.getElementById('insurance').value) || 0;
+    const hoa        = parseFloat(document.getElementById('hoa').value)       || 0;
+    const utilities  = parseFloat(document.getElementById('utilities').value) || 0;
+    const mgmtAmt    = grossRent * mgmtPct / 100;
+    const maintAmt   = grossRent * maintPct / 100;
+    const vacancyAmt = grossRent * vacancyPct / 100;
+    const totalOpex  = propTax + insurance + hoa + utilities + mgmtAmt + maintAmt + vacancyAmt;
+    document.getElementById('total-opex').textContent = fmt(totalOpex);
+
+    // Mortgage & obligations
+    const mortgage = calcMonthlyPayment(loanAmount, interestRate, loanTerm);
+    document.getElementById('monthly-mortgage').value   = mortgage > 0 ? Math.round(mortgage) : '';
+    const totalObligations = totalOpex + mortgage;
+    document.getElementById('total-obligations').value  = totalObligations > 0 ? Math.round(totalObligations) : '';
+  }
+
+  /* ── Full analysis on button click ── */
+  function analyze() {
+    const purchasePrice   = parseFloat(document.getElementById('purchase-price').value)  || 0;
+    const downPayment     = parseFloat(document.getElementById('down-payment').value)     || 0;
+    const interestRate    = parseFloat(document.getElementById('interest-rate').value)    || 0;
+    const loanTerm        = parseInt(document.getElementById('loan-term').value, 10)      || 30;
+    const grossRent       = parseFloat(document.getElementById('gross-rent').value)       || 0;
+    const otherIncome     = parseFloat(document.getElementById('other-income').value)     || 0;
+    const propTax         = parseFloat(document.getElementById('prop-tax').value)         || 0;
+    const insurance       = parseFloat(document.getElementById('insurance').value)        || 0;
+    const hoa             = parseFloat(document.getElementById('hoa').value)              || 0;
+    const utilities       = parseFloat(document.getElementById('utilities').value)        || 0;
+    const mgmtPct         = parseFloat(document.getElementById('mgmt-pct').value)         || 0;
+    const maintPct        = parseFloat(document.getElementById('maintenance-pct').value)  || 0;
+    const vacancyPct      = parseFloat(document.getElementById('vacancy-pct').value)      || 0;
+    const apprRate        = parseFloat(document.getElementById('appr-rate').value)        || 0;
+    const projYears       = parseInt(document.getElementById('proj-years').value, 10)     || 10;
+
+    if (!purchasePrice || !grossRent) return;
+
+    const loanAmount = Math.max(0, purchasePrice - downPayment);
+    const mortgage   = calcMonthlyPayment(loanAmount, interestRate, loanTerm);
+
+    // Closing costs & rehab
+    const origFee  = parseFloat(document.getElementById('origination-fee').value) || 0;
+    const apprFee  = parseFloat(document.getElementById('appraisal-fee').value)   || 0;
+    const titleIns = parseFloat(document.getElementById('title-insurance').value) || 0;
+    const inspFee  = parseFloat(document.getElementById('inspection-fee').value)  || 0;
+    const attyFee  = parseFloat(document.getElementById('attorney-fees').value)   || 0;
+    const otherCC  = parseFloat(document.getElementById('other-closing').value)   || 0;
+    const totalCC  = origFee + apprFee + titleIns + inspFee + attyFee + otherCC;
+
+    const rehabTotal = (parseFloat(document.getElementById('rehab-structural').value) || 0)
+                     + (parseFloat(document.getElementById('rehab-roof').value)       || 0)
+                     + (parseFloat(document.getElementById('rehab-kitchen').value)    || 0)
+                     + (parseFloat(document.getElementById('rehab-flooring').value)   || 0)
+                     + (parseFloat(document.getElementById('rehab-hvac').value)       || 0)
+                     + (parseFloat(document.getElementById('rehab-other').value)      || 0);
+
+    const totalCashInvested = downPayment + totalCC + rehabTotal;
+
+    // Expenses
+    const mgmtAmt    = grossRent * mgmtPct / 100;
+    const maintAmt   = grossRent * maintPct / 100;
+    const vacancyAmt = grossRent * vacancyPct / 100;
+    const totalOpex  = propTax + insurance + hoa + utilities + mgmtAmt + maintAmt + vacancyAmt;
+    const totalIncome = grossRent + otherIncome;
+    const netMonthly = totalIncome - totalOpex - mortgage;
+    const annualCF   = netMonthly * 12;
+
+    // ── Cash flow ledger ──
+    document.getElementById('cf-rent').textContent         = '+' + fmt(grossRent);
+    document.getElementById('cf-other-income').textContent = '+' + fmt(otherIncome);
+    document.getElementById('cf-tax').textContent          = '−' + fmt(propTax);
+    document.getElementById('cf-insurance').textContent    = '−' + fmt(insurance);
+    document.getElementById('cf-hoa').textContent          = '−' + fmt(hoa);
+    document.getElementById('cf-util').textContent         = '−' + fmt(utilities);
+    document.getElementById('cf-mgmt').textContent         = '−' + fmt(mgmtAmt);
+    document.getElementById('cf-maint').textContent        = '−' + fmt(maintAmt);
+    document.getElementById('cf-vacancy').textContent      = '−' + fmt(vacancyAmt);
+    document.getElementById('cf-mortgage').textContent     = '−' + fmt(mortgage);
+
+    const netRow = document.getElementById('cf-net-row');
+    netRow.className = 'cf-row ' + (netMonthly >= 0 ? 'net-positive' : 'net-negative');
+    const netEl = document.getElementById('cf-net');
+    netEl.textContent = (netMonthly >= 0 ? '+' : '−') + fmt(netMonthly);
+    netEl.style.color = netMonthly >= 0 ? '#059669' : '#dc2626';
+
+    const annualEl = document.getElementById('cf-annual');
+    annualEl.textContent = (annualCF >= 0 ? '+' : '−') + fmt(annualCF) + '/yr';
+    annualEl.style.color = annualCF >= 0 ? '#7c3aed' : '#dc2626';
+
+    // ── Returns ──
+    const annualNOI    = (totalIncome - totalOpex) * 12;
+    const capRate      = purchasePrice > 0 ? annualNOI / purchasePrice * 100 : 0;
+    const cashOnCash   = totalCashInvested > 0 ? annualCF / totalCashInvested * 100 : 0;
+    const grm          = grossRent > 0 ? purchasePrice / (grossRent * 12) : 0;
+
+    document.getElementById('ret-cap-rate').textContent = pct(capRate);
+    document.getElementById('ret-coc').textContent      = pct(cashOnCash);
+    document.getElementById('ret-grm').textContent      = grm.toFixed(1) + 'x';
+    document.getElementById('ret-noi').textContent      = fmt(annualNOI) + '/yr';
+
+    // Color cap rate card based on value
+    const capCard = document.querySelector('[id="ret-cap-rate"]').closest('.return-card');
+    if (capRate >= 7) { capCard.style.setProperty('--bg','#ecfdf5'); capCard.style.setProperty('--border','#a7f3d0'); capCard.style.setProperty('--accent','#059669'); }
+    else if (capRate >= 4) { capCard.style.setProperty('--bg','#fffbeb'); capCard.style.setProperty('--border','#fde68a'); capCard.style.setProperty('--accent','#d97706'); }
+    else { capCard.style.setProperty('--bg','#fef2f2'); capCard.style.setProperty('--border','#fecaca'); capCard.style.setProperty('--accent','#dc2626'); }
+
+    // ── Equity & Appreciation ──
+    const loanBalances   = buildAmortization(loanAmount, interestRate, loanTerm);
+    const cappedYears    = Math.min(projYears, loanTerm);
+    const labels         = [];
+    const propValues     = [];
+    const loanBals       = [];
+    const equityVals     = [];
+
+    for (let y = 1; y <= cappedYears; y++) {
+      labels.push('Yr ' + y);
+      const val    = purchasePrice * Math.pow(1 + apprRate / 100, y);
+      const bal    = loanBalances[y - 1] !== undefined ? loanBalances[y - 1] : 0;
+      const equity = val - bal;
+      propValues.push(Math.round(val));
+      loanBals.push(Math.round(bal));
+      equityVals.push(Math.round(equity));
+    }
+
+    const finalVal    = propValues[propValues.length - 1] || purchasePrice;
+    const finalBal    = loanBals[loanBals.length - 1]     || 0;
+    const finalEquity = finalVal - finalBal;
+    const apprGain    = finalVal - purchasePrice;
+
+    document.getElementById('appr-value').textContent     = fmt(finalVal);
+    document.getElementById('appr-value-sub').textContent = 'At year ' + cappedYears;
+    document.getElementById('appr-equity').textContent    = fmt(finalEquity);
+    document.getElementById('appr-equity-sub').textContent= 'Yr ' + cappedYears + ' value − balance';
+    document.getElementById('appr-gain').textContent      = '+' + fmt(apprGain);
+
+    if (equityChartInstance) equityChartInstance.destroy();
+    const ctx = document.getElementById('equityChart').getContext('2d');
+    equityChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Property Value',
+            data: propValues,
+            borderColor: 'rgba(37,99,235,0.9)',
+            backgroundColor: 'rgba(37,99,235,0.06)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 2,
+          },
+          {
+            label: 'Equity',
+            data: equityVals,
+            borderColor: 'rgba(5,150,105,0.9)',
+            backgroundColor: 'rgba(5,150,105,0.08)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 2,
+          },
+          {
+            label: 'Loan Balance',
+            data: loanBals,
+            borderColor: 'rgba(220,38,38,0.7)',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [5, 4],
+            fill: false,
+            tension: 0.3,
+            pointRadius: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { weight: '700', size: 11 } } },
+          tooltip: { callbacks: { label: (c) => ' ' + c.dataset.label + ': ' + fmt(c.raw) } }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: { ticks: { callback: (v) => '$' + (v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v) } }
+        },
+      },
+    });
+
+    // ── Break-Even ──
+    const beContainer = document.getElementById('breakeven-content');
+    if (netMonthly <= 0) {
+      beContainer.innerHTML = `<div class="negative-cf-msg">⚠️ Break-even cannot be calculated because this property has negative monthly cash flow (${fmtD(netMonthly)}/month). To reach break-even, either increase rental income or reduce expenses.</div>`;
+    } else {
+      const beMonths = totalCashInvested / netMonthly;
+      const beYears  = beMonths / 12;
+      const progress = Math.min(100, (1 / beYears) * 100); // invert: shorter = higher bar
+      beContainer.innerHTML = `
+        <div class="breakeven-box">
+          <div class="breakeven-stats">
+            <div class="be-stat">
+              <span class="be-label">Total Cash Invested</span>
+              <span class="be-value">${fmt(totalCashInvested)}</span>
+            </div>
+            <div class="be-stat">
+              <span class="be-label">Monthly Cash Flow</span>
+              <span class="be-value" style="color:#059669">+${fmt(netMonthly)}/mo</span>
+            </div>
+            <div class="be-stat">
+              <span class="be-label">Break-Even</span>
+              <span class="be-value">${Math.round(beMonths)} months</span>
+            </div>
+            <div class="be-stat">
+              <span class="be-label">Break-Even</span>
+              <span class="be-value">${beYears.toFixed(1)} years</span>
+            </div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-bar" style="width:${progress}%"></div>
+          </div>
+          <div class="progress-label">Shorter break-even = stronger deal. This property recovers your full cash investment in <strong>${beYears.toFixed(1)} years</strong> through cash flow alone.</div>
+        </div>`;
+    }
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ── Wire up live updates ── */
+  document.querySelectorAll('.form-input:not([readonly])').forEach(el => {
+    el.addEventListener('input', liveUpdate);
+    el.addEventListener('change', liveUpdate);
+  });
+
+  document.getElementById('btn-analyze').addEventListener('click', analyze);
+  document.getElementById('proj-years').addEventListener('change', () => {
+    if (document.getElementById('results').style.display === 'block') analyze();
+  });
+  document.getElementById('appr-rate').addEventListener('input', () => {
+    if (document.getElementById('results').style.display === 'block') analyze();
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Seed origination fee when purchase price changes
+  document.getElementById('purchase-price').addEventListener('input', function() {
+    const pp = parseFloat(this.value) || 0;
+    const dp = parseFloat(document.getElementById('down-payment').value) || 0;
+    const loan = Math.max(0, pp - dp);
+    const origEl = document.getElementById('origination-fee');
+    if (!origEl.dataset.userEdited) {
+      origEl.value = loan > 0 ? Math.round(loan * 0.01) : '';
+    }
+    liveUpdate();
+  });
+  document.getElementById('down-payment').addEventListener('input', function() {
+    const pp   = parseFloat(document.getElementById('purchase-price').value) || 0;
+    const dp   = parseFloat(this.value) || 0;
+    const loan = Math.max(0, pp - dp);
+    const origEl = document.getElementById('origination-fee');
+    if (!origEl.dataset.userEdited) {
+      origEl.value = loan > 0 ? Math.round(loan * 0.01) : '';
+    }
+    liveUpdate();
+  });
+  document.getElementById('origination-fee').addEventListener('input', function() {
+    this.dataset.userEdited = 'true';
+    liveUpdate();
+  });
+</script>
+
+</body>
+</html>
