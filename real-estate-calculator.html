@@ -376,7 +376,7 @@
         <div class="field">
           <label class="field-label" for="down-pct">Down Payment %</label>
           <div class="input-wrap has-suffix">
-            <input class="form-input" id="down-pct" type="number" readonly placeholder="—" />
+            <input class="form-input" id="down-pct" type="number" min="0" max="100" step="0.5" placeholder="e.g. 20" />
             <span class="suffix">%</span>
           </div>
         </div>
@@ -957,7 +957,6 @@
     // Loan amount
     const loanAmount = Math.max(0, purchasePrice - downPayment);
     document.getElementById('loan-amount').value = loanAmount || '';
-    document.getElementById('down-pct').value = purchasePrice > 0 ? (downPayment / purchasePrice * 100).toFixed(1) : '';
 
     // Closing costs
     const origFee   = parseFloat(document.getElementById('origination-fee').value) || 0;
@@ -1223,10 +1222,13 @@
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  /* ── Wire up live updates ── */
+  /* ── Wire up live updates (exclude fields with dedicated handlers) ── */
+  const skipIds = new Set(['purchase-price','down-payment','down-pct','origination-fee']);
   document.querySelectorAll('.form-input:not([readonly])').forEach(el => {
-    el.addEventListener('input', liveUpdate);
-    el.addEventListener('change', liveUpdate);
+    if (!skipIds.has(el.id)) {
+      el.addEventListener('input', liveUpdate);
+      el.addEventListener('change', liveUpdate);
+    }
   });
 
   document.getElementById('btn-analyze').addEventListener('click', analyze);
@@ -1239,20 +1241,32 @@
 
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // Seed origination fee when purchase price changes
+  // Two-way sync: Down Payment $ ↔ Down Payment %
+  // Entering $ updates %; entering % updates $
   document.getElementById('purchase-price').addEventListener('input', function() {
     const pp = parseFloat(this.value) || 0;
-    const dp = parseFloat(document.getElementById('down-payment').value) || 0;
-    const loan = Math.max(0, pp - dp);
+    const dpEl  = document.getElementById('down-payment');
+    const pctEl = document.getElementById('down-pct');
+    // If $ is filled, recompute %; if % is filled, recompute $
+    if (dpEl.value !== '') {
+      const dp = parseFloat(dpEl.value) || 0;
+      pctEl.value = pp > 0 ? (dp / pp * 100).toFixed(1) : '';
+    } else if (pctEl.value !== '') {
+      const pct = parseFloat(pctEl.value) || 0;
+      dpEl.value = pp > 0 ? Math.round(pp * pct / 100) : '';
+    }
+    const loan = Math.max(0, pp - (parseFloat(dpEl.value) || 0));
     const origEl = document.getElementById('origination-fee');
     if (!origEl.dataset.userEdited) {
       origEl.value = loan > 0 ? Math.round(loan * 0.01) : '';
     }
     liveUpdate();
   });
+
   document.getElementById('down-payment').addEventListener('input', function() {
-    const pp   = parseFloat(document.getElementById('purchase-price').value) || 0;
-    const dp   = parseFloat(this.value) || 0;
+    const pp  = parseFloat(document.getElementById('purchase-price').value) || 0;
+    const dp  = parseFloat(this.value) || 0;
+    document.getElementById('down-pct').value = pp > 0 ? (dp / pp * 100).toFixed(1) : '';
     const loan = Math.max(0, pp - dp);
     const origEl = document.getElementById('origination-fee');
     if (!origEl.dataset.userEdited) {
@@ -1260,6 +1274,22 @@
     }
     liveUpdate();
   });
+
+  document.getElementById('down-pct').addEventListener('input', function() {
+    const pp  = parseFloat(document.getElementById('purchase-price').value) || 0;
+    const pct = parseFloat(this.value) || 0;
+    if (pp > 0) {
+      const dp = Math.round(pp * pct / 100);
+      document.getElementById('down-payment').value = dp;
+      const loan = Math.max(0, pp - dp);
+      const origEl = document.getElementById('origination-fee');
+      if (!origEl.dataset.userEdited) {
+        origEl.value = loan > 0 ? Math.round(loan * 0.01) : '';
+      }
+    }
+    liveUpdate();
+  });
+
   document.getElementById('origination-fee').addEventListener('input', function() {
     this.dataset.userEdited = 'true';
     liveUpdate();
