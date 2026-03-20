@@ -1,0 +1,39 @@
+name: Weekly Finance Article
+
+on:
+  schedule:
+    # 9:00 AM CST = 15:00 UTC (14:00 UTC during CDT, but using CST/UTC-6 standard)
+    - cron: '0 15 * * 1'
+  workflow_dispatch: # allows manual trigger from GitHub Actions UI
+
+jobs:
+  write-article:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install anthropic requests
+
+      - name: Generate and publish article
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python .github/scripts/write_article.py
+
+      - name: Commit and push new article
+        run: |
+          git config user.name "Wealth Builder Bot"
+          git config user.email "actions@github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "Weekly article: $(date +'%B %d, %Y')"
+          git push
