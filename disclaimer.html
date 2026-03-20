@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Disclaimer – Wealth Builder Tools</title>
-  <meta name="description" content="Disclaimer for Wealth Builder Tools and Smart Budget Calculator." />
+  <meta name="description" content="Disclaimer for Wealth Builder Tools. Our calculators are for informational purposes only and do not constitute financial advice." />
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6409027472747425">
@@ -102,7 +102,13 @@
   <p>Our Sites may link to external websites for reference. We do not endorse or take responsibility for the content or practices of any third-party sites.</p>
 
   <hr class="divider" />
-  <footer>&copy; <script>document.write(new Date().getFullYear())</script> Wealth Builder Tools</footer>
+  <footer>
+    &copy; <span id="year"></span> Wealth Builder Tools &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/about.html">About</a> &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/contact.html">Contact</a> &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/privacy-policy.html">Privacy Policy</a>
+  </footer>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </div>
 </body>
 </html>
