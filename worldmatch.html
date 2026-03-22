@@ -876,7 +876,49 @@
   <!-- ══════════════════════════════════════════
        QUESTIONNAIRE
   ══════════════════════════════════════════ -->
-  <div class="main-card" id="quiz-card">
+  <!-- ══════════════════════════════════════════
+       EMAIL GATE
+  ══════════════════════════════════════════ -->
+  <div class="main-card" id="email-gate">
+    <div class="header">
+      <h1>◈ WorldMatch</h1>
+      <p>Find the 5 best places in the world for you to live</p>
+    </div>
+
+    <div style="max-width:480px;margin:0 auto;">
+      <p style="font-size:1rem;line-height:1.7;color:var(--text);margin-bottom:8px;text-align:center;">
+        Answer 40 questions about your lifestyle, budget, and values — then get a personalized AI report of the top 5 places for you.
+      </p>
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:24px;text-align:center;">
+        Your report will be displayed here and sent to your email so you can revisit it anytime.
+      </p>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-family:var(--font-body);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Your Name</label>
+        <input class="select-input" type="text" id="user-name" placeholder="First name" />
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <label style="font-family:var(--font-body);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Email Address</label>
+        <input class="select-input" type="email" id="user-email" placeholder="you@example.com" />
+      </div>
+
+      <div id="email-error" class="error-msg"></div>
+
+      <button class="btn btn-submit" style="width:100%;font-size:1rem;padding:16px;" onclick="startQuiz()">
+        Start My WorldMatch Quiz →
+      </button>
+
+      <p style="font-family:var(--font-body);font-size:0.65rem;color:var(--muted);text-align:center;margin-top:12px;line-height:1.5;">
+        We'll send your report to this email. No spam — just your results.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       QUESTIONNAIRE
+  ══════════════════════════════════════════ -->
+  <div class="main-card hidden" id="quiz-card">
     <div class="header">
       <h1>◈ WorldMatch</h1>
       <p>Find the 5 best places in the world for you to live</p>
@@ -1481,6 +1523,33 @@ const questions = [
 
 let currentQ = 0;
 const answers = {};
+let userName = '';
+let userEmail = '';
+
+function startQuiz() {
+  const name = document.getElementById('user-name').value.trim();
+  const email = document.getElementById('user-email').value.trim();
+  const errorBox = document.getElementById('email-error');
+
+  if (!name) {
+    errorBox.textContent = 'Please enter your name.';
+    errorBox.classList.add('visible');
+    return;
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorBox.textContent = 'Please enter a valid email address.';
+    errorBox.classList.add('visible');
+    return;
+  }
+
+  errorBox.classList.remove('visible');
+  userName = name;
+  userEmail = email;
+
+  document.getElementById('email-gate').classList.add('hidden');
+  document.getElementById('quiz-card').classList.remove('hidden');
+  renderQuestion();
+}
 
 // ══════════════════════════════════════════════════════════
 // RENDER
@@ -1782,10 +1851,29 @@ async function submitQuiz() {
     const prompt = formatAnswers(answers);
     const result = await callClaude(prompt);
     showResults(result);
+
+    // Send report to email in background (don't block results display)
+    sendReportEmail(result).catch(err => console.error('Email send failed:', err));
   } catch (err) {
     loadingScreen.classList.remove('active');
     document.getElementById('quiz-card').classList.remove('hidden');
     showError('Error generating report: ' + err.message + ' — Please try again in a moment.');
+  }
+}
+
+async function sendReportEmail(reportMarkdown) {
+  try {
+    await fetch(WORKER_URL + '/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: userEmail,
+        name: userName,
+        report: reportMarkdown
+      })
+    });
+  } catch (e) {
+    console.error('Email delivery error:', e);
   }
 }
 
@@ -2072,7 +2160,7 @@ function showResults(markdown) {
         <div class="next-steps-title">🧭 What To Do Next</div>
         <div class="next-steps-text">${data.nextSteps.replace(/\n/g, '<br>')}</div>
         <div class="next-steps-actions">
-          <button class="btn-cta btn-save" onclick="saveReport()">📋 Save My Report</button>
+          <span class="btn-cta" style="background:rgba(124,58,237,0.1);color:var(--accent);cursor:default;">✓ Report sent to ${userEmail}</span>
           <button class="btn-cta btn-retake" onclick="location.reload()">🔄 Retake Quiz</button>
         </div>
       </div>`;

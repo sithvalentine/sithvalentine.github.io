@@ -184,54 +184,238 @@ export default {
       return new Response('Forbidden', { status: 403 });
     }
 
-    try {
-      const body = await request.json();
-      const { prompt } = body;
+    // Route based on path
+    const url = new URL(request.url);
+    const path = url.pathname;
 
-      if (!prompt || typeof prompt !== 'string') {
-        return corsResponse(origin, JSON.stringify({ error: 'Missing prompt' }), 400);
-      }
-
-      // Limit prompt length to prevent abuse
-      if (prompt.length > 10000) {
-        return corsResponse(origin, JSON.stringify({ error: 'Prompt too long' }), 400);
-      }
-
-      // Call Claude API
-      const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 4096,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      });
-
-      if (!claudeResponse.ok) {
-        const errText = await claudeResponse.text();
-        console.error('Claude API error:', claudeResponse.status, errText);
-        return corsResponse(origin, JSON.stringify({
-          error: 'AI service temporarily unavailable. Please try again.'
-        }), 502);
-      }
-
-      const data = await claudeResponse.json();
-      const resultText = data.content[0].text;
-
-      return corsResponse(origin, JSON.stringify({ result: resultText }), 200);
-
-    } catch (err) {
-      console.error('Worker error:', err);
-      return corsResponse(origin, JSON.stringify({ error: 'Something went wrong. Please try again.' }), 500);
+    if (path === '/email') {
+      return handleEmail(request, env, origin);
     }
+
+    // Default: generate report
+    return handleReport(request, env, origin);
   },
 };
+
+// ── Generate report via Claude ──
+
+async function handleReport(request, env, origin) {
+  try {
+    const body = await request.json();
+    const { prompt } = body;
+
+    if (!prompt || typeof prompt !== 'string') {
+      return corsResponse(origin, JSON.stringify({ error: 'Missing prompt' }), 400);
+    }
+
+    if (prompt.length > 10000) {
+      return corsResponse(origin, JSON.stringify({ error: 'Prompt too long' }), 400);
+    }
+
+    const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+
+    if (!claudeResponse.ok) {
+      const errText = await claudeResponse.text();
+      console.error('Claude API error:', claudeResponse.status, errText);
+      return corsResponse(origin, JSON.stringify({
+        error: 'AI service temporarily unavailable. Please try again.'
+      }), 502);
+    }
+
+    const data = await claudeResponse.json();
+    const resultText = data.content[0].text;
+
+    return corsResponse(origin, JSON.stringify({ result: resultText }), 200);
+
+  } catch (err) {
+    console.error('Worker error:', err);
+    return corsResponse(origin, JSON.stringify({ error: 'Something went wrong. Please try again.' }), 500);
+  }
+}
+
+// ── Email report via Kit (ConvertKit) ──
+
+const KIT_TAG_NAME = 'WorldMatch';
+
+async function handleEmail(request, env, origin) {
+  try {
+    const body = await request.json();
+    const { email, name, report } = body;
+
+    if (!email || !report) {
+      return corsResponse(origin, JSON.stringify({ error: 'Missing email or report' }), 400);
+    }
+
+    const kitApiKey = env.KIT_API_KEY;
+
+    // Step 1: Add/update subscriber in Kit with tag
+    const tagId = await getOrCreateTag(kitApiKey, KIT_TAG_NAME);
+    await tagSubscriber(kitApiKey, tagId, email, name);
+
+    // Step 2: Send report via Kit's broadcast (or use a transactional-style approach)
+    // Kit doesn't have transactional email on free tier, so we'll create a
+    // one-off broadcast to this subscriber using their API.
+    // Alternative: Use Kit's custom fields to store the report and trigger an automation.
+    //
+    // Simplest approach: Store report in a custom field and trigger automation,
+    // OR send via a simple email using Cloudflare's built-in MailChannels integration.
+
+    // We'll use MailChannels (free for Cloudflare Workers) for the transactional email
+    await sendReportEmail(env, email, name, report);
+
+    return corsResponse(origin, JSON.stringify({ success: true }), 200);
+
+  } catch (err) {
+    console.error('Email handler error:', err);
+    return corsResponse(origin, JSON.stringify({ error: 'Failed to send email' }), 500);
+  }
+}
+
+async function getOrCreateTag(apiKey, tagName) {
+  // List existing tags (v3 API)
+  const listRes = await fetch(`https://api.convertkit.com/v3/tags?api_key=${apiKey}`);
+
+  if (listRes.ok) {
+    const data = await listRes.json();
+    const existing = data.tags?.find(t => t.name === tagName);
+    if (existing) return existing.id;
+  }
+
+  // Create tag if it doesn't exist
+  const createRes = await fetch('https://api.convertkit.com/v3/tags', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      api_key: apiKey,
+      tag: { name: tagName },
+    }),
+  });
+
+  if (!createRes.ok) {
+    console.error('Failed to create Kit tag:', await createRes.text());
+    throw new Error('Failed to create tag');
+  }
+
+  const tagData = await createRes.json();
+  return tagData.id;
+}
+
+async function tagSubscriber(apiKey, tagId, email, name) {
+  const res = await fetch(`https://api.convertkit.com/v3/tags/${tagId}/subscribe`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      api_key: apiKey,
+      email: email,
+      first_name: name || '',
+    }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error('Kit tag subscriber error:', res.status, errText);
+    // Don't throw — subscriber might already exist, still send email
+  }
+}
+
+async function sendReportEmail(env, toEmail, toName, reportMarkdown) {
+  const reportHtml = markdownToEmailHtml(reportMarkdown, toName);
+
+  // Use Resend for transactional email delivery
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+    },
+    body: JSON.stringify({
+      from: 'WorldMatch <reports@9dimesproject.com>',
+      to: [toEmail],
+      subject: 'Your WorldMatch Report — Top 5 Places to Live',
+      html: reportHtml,
+    }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error('Resend error:', res.status, errText);
+    throw new Error('Email send failed');
+  }
+}
+
+function markdownToEmailHtml(md, recipientName) {
+  // Simple markdown → HTML for email
+  let html = md
+    // Headers
+    .replace(/^# (.+)$/gm, '<h1 style="font-family:Georgia,serif;color:#1e1b4b;font-size:28px;margin-bottom:16px;">$1</h1>')
+    .replace(/^## (.+)$/gm, '<h2 style="font-family:Georgia,serif;color:#1e1b4b;font-size:22px;margin-top:32px;margin-bottom:12px;border-bottom:2px solid #7c3aed;padding-bottom:8px;">$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3 style="font-family:Georgia,serif;color:#1e1b4b;font-size:18px;margin-top:20px;margin-bottom:8px;">$1</h3>')
+    // Bold
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    // Italic
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    // Horizontal rules
+    .replace(/^---+$/gm, '<hr style="border:none;border-top:1px solid #d6d3e8;margin:24px 0;">')
+    // Table rows (simple)
+    .replace(/\| (.+) \|/g, (match) => {
+      const cells = match.split('|').filter(c => c.trim()).map(c => `<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">${c.trim()}</td>`);
+      return `<tr>${cells.join('')}</tr>`;
+    })
+    // Line breaks
+    .replace(/\n\n/g, '</p><p style="font-family:Segoe UI,sans-serif;font-size:15px;line-height:1.7;color:#1e1b4b;margin-bottom:12px;">')
+    .replace(/\n/g, '<br>');
+
+  // Wrap tables
+  html = html.replace(/<tr>/g, (match, offset) => {
+    const before = html.substring(0, offset);
+    if (!before.includes('<table') || before.lastIndexOf('</table>') > before.lastIndexOf('<table')) {
+      return '<table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;"><tr>';
+    }
+    return match;
+  });
+
+  return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f3f0ff;font-family:'Segoe UI',sans-serif;">
+  <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <span style="font-family:Georgia,serif;font-size:24px;color:#7c3aed;font-weight:700;">◈ WorldMatch</span>
+    </div>
+    <div style="background:#ffffff;border-radius:16px;padding:36px 32px;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+      <p style="font-family:Segoe UI,sans-serif;font-size:15px;line-height:1.7;color:#1e1b4b;margin-bottom:12px;">
+        Hi ${recipientName || 'there'},
+      </p>
+      <p style="font-family:Segoe UI,sans-serif;font-size:15px;line-height:1.7;color:#1e1b4b;margin-bottom:20px;">
+        Here's your personalized WorldMatch report. Keep it for reference as you explore your next chapter.
+      </p>
+      <hr style="border:none;border-top:2px solid #7c3aed;margin:24px 0;">
+      <p style="font-family:Segoe UI,sans-serif;font-size:15px;line-height:1.7;color:#1e1b4b;margin-bottom:12px;">
+        ${html}
+      </p>
+    </div>
+    <div style="text-align:center;margin-top:24px;font-size:12px;color:#6b7280;">
+      <p>Powered by WorldMatch × Wealth Builder Tools</p>
+      <p style="margin-top:4px;"><a href="https://sithvalentine.github.io" style="color:#7c3aed;text-decoration:none;">sithvalentine.github.io</a></p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
 
 function handleCORS(request) {
   const origin = request.headers.get('Origin') || '';
