@@ -1417,6 +1417,9 @@ const questions = [
   { section: 0, key: 'dislikeMost', title: 'What bothers you most about where you live? (select all that apply)', type: 'multi', options: ['Too expensive','Bad weather','Too far from family','Lack of culture','Limited outdoor activities','Safety concerns','Poor job market','Bad traffic / sprawl','Political climate','Poor healthcare','Boring / nothing to do','Pollution / air quality','Isolation / loneliness'] },
 
   // SECTION 2 — Climate & Environment
+  { section: 1, key: 'livingStyle', title: 'How do you want to live?', type: 'single', options: ['One home base — live in one place year-round','Split time between two places (seasonal / snowbird)','Travel frequently — digital nomad / no fixed base'] },
+  { section: 1, key: 'seasonEscape', title: 'Which season do you most want to escape?', type: 'single', dependsOn: { key: 'livingStyle', value: 'Split time between two places (seasonal / snowbird)' }, options: ['Cold winters — I want somewhere warm from Nov–Mar','Hot summers — I want somewhere cool from Jun–Sep','Rainy season — I want dry weather part of the year','I want both warm and cool — variety across the year'] },
+  { section: 1, key: 'splitMonths', title: 'How would you split your time?', type: 'single', dependsOn: { key: 'livingStyle', value: 'Split time between two places (seasonal / snowbird)' }, options: ['6 months / 6 months (equal split)','8 months main base / 4 months seasonal','4 months main base / 8 months seasonal','3–4 months each across multiple places'] },
   { section: 1, key: 'temperature', title: 'What is your ideal temperature range?', type: 'single', options: ['Hot year-round (85°F+ / 30°C+)','Warm year-round (70–85°F / 21–30°C)','Mild with seasons (50–80°F / 10–27°C)','Cool and temperate (40–65°F / 4–18°C)','I love cold winters (below 40°F / 4°C)'] },
   { section: 1, key: 'humidity', title: 'What is your humidity preference?', type: 'single', options: ['Dry and arid','Low humidity','Moderate humidity','I don\'t mind humidity','Tropical / high humidity is fine'] },
   { section: 1, key: 'seasons', title: 'How important are distinct seasons to you?', type: 'single', options: ['I want 4 clear seasons','I prefer 2 seasons (warm/cool)','I want the same weather year-round','I have no strong preference'] },
@@ -1487,10 +1490,13 @@ function renderQuestion() {
   const container = document.getElementById('question-container');
   const existing = answers[q.key];
 
-  // Update progress
+  // Update progress (count only visible questions)
+  const visibleQs = questions.filter(q => !shouldSkip(q));
+  const visibleIndex = visibleQs.indexOf(q) + 1;
+  const totalVisible = visibleQs.length;
   document.getElementById('progress-section').textContent = `Section ${q.section + 1} of 10 — ${SECTIONS[q.section]}`;
-  document.getElementById('progress-q').textContent = `Question ${currentQ + 1} of ${questions.length}`;
-  document.getElementById('progress-fill').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+  document.getElementById('progress-q').textContent = `Question ${visibleIndex} of ${totalVisible}`;
+  document.getElementById('progress-fill').style.width = `${(visibleIndex / totalVisible) * 100}%`;
 
   // Update buttons
   document.getElementById('btn-prev').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
@@ -1717,6 +1723,11 @@ function validateCurrent() {
   return true;
 }
 
+function shouldSkip(q) {
+  if (!q.dependsOn) return false;
+  return answers[q.dependsOn.key] !== q.dependsOn.value;
+}
+
 function nextQuestion() {
   collectCurrentAnswer();
   if (!validateCurrent()) {
@@ -1730,6 +1741,14 @@ function nextQuestion() {
   }
 
   currentQ++;
+  // Skip questions whose dependency isn't met
+  while (currentQ < questions.length && shouldSkip(questions[currentQ])) {
+    currentQ++;
+  }
+  if (currentQ >= questions.length) {
+    submitQuiz();
+    return;
+  }
   renderQuestion();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1738,6 +1757,10 @@ function prevQuestion() {
   collectCurrentAnswer();
   if (currentQ > 0) {
     currentQ--;
+    // Skip backwards over conditional questions
+    while (currentQ > 0 && shouldSkip(questions[currentQ])) {
+      currentQ--;
+    }
     renderQuestion();
   }
 }
@@ -1834,6 +1857,9 @@ SECTION 1 — CURRENT LIVING SITUATION
 - What bothers me most: ${arr(a.dislikeMost)}
 
 SECTION 2 — CLIMATE & ENVIRONMENT
+- Living style: ${val(a.livingStyle)}${a.livingStyle && a.livingStyle.includes('Split') ? `
+- Season to escape: ${val(a.seasonEscape)}
+- Time split preference: ${val(a.splitMonths)}` : ''}
 - Ideal temperature: ${val(a.temperature)}
 - Humidity preference: ${val(a.humidity)}
 - Seasons importance: ${val(a.seasons)}

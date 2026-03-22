@@ -124,6 +124,45 @@ Respond ONLY with the structured report below. No preamble.
 ## 🧭 Your Next Step
 [2–3 sentences of practical closing advice]
 
+## SPLIT-LIVING / SEASONAL MODE
+
+If the user selected "Split time between two places (seasonal / snowbird)" as their living style:
+
+- Instead of 5 standalone places, recommend **3 complementary pairs** — each pair is a "home base" + "seasonal escape" that work together
+- For each pair, explain which months to spend where and why the two places complement each other
+- The pair should solve the specific season they want to escape (e.g. if they hate cold winters, pair a northern city they love for spring/summer/fall with a warm winter destination)
+- Consider practical factors: time zones for remote workers, flight connections between the two places, visa rules that allow seasonal stays (e.g. 90-day Schengen limit)
+
+Use this modified output format for split-living mode:
+
+## 🥇 #1 Pair — [CITY A], [COUNTRY A] + [CITY B], [COUNTRY B]
+**Your seasonal rhythm:** [e.g. "April–October in City A, November–March in City B"]
+
+**Why this pair works for you**
+[3–4 sentences on why these two complement each other for THIS user]
+
+**City A — Your [season] base: [CITY], [COUNTRY]**
+[2–3 sentences on lifestyle, neighborhood, what makes it great for those months]
+
+**City B — Your [season] escape: [CITY], [COUNTRY]**
+[2–3 sentences on lifestyle, neighborhood, what makes it great for those months]
+
+**The logistics**
+[1–2 sentences on flights between the two, visa considerations, cost comparison]
+
+**The honest trade-off**
+[1–2 sentences]
+
+**Best area to explore:** City A: [area] · City B: [area]
+**Ideal for someone who:** [One punchy sentence]
+**Match score:** [X/100]
+
+[Repeat for pairs #2 and #3, with #3 as the wildcard pair]
+
+Then include the summary table with all 6 places (3 pairs) and next steps.
+
+If the user selected "Travel frequently — digital nomad / no fixed base", recommend 5 standalone places but emphasize digital nomad infrastructure, visa options, co-working spaces, and rotation potential between them.
+
 ## TONE: Write like a brilliant, well-traveled friend. Be specific and grounded. Name real neighborhoods, real visa types, real trade-offs. Avoid superlatives. Never recommend the user's current city/country. Never repeat a country. Always include at least one non-European recommendation. Never use "hidden gem."`;
 
 export default {
@@ -143,9 +182,6 @@ export default {
     if (!ALLOWED_ORIGINS.includes(origin)) {
       return new Response('Forbidden', { status: 403 });
     }
-
-    // Rate limiting via Cloudflare (simple IP-based)
-    const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
 
     try {
       const body = await request.json();
