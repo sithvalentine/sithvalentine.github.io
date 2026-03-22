@@ -1450,6 +1450,7 @@ const questions = [
   { section: 5, key: 'politicalStability', title: 'How important is political stability?', type: 'single', options: ['Very important — I want a stable democracy','Important but not a dealbreaker','I\'m flexible','I don\'t care about politics'] },
   { section: 5, key: 'ruledOutRegions', title: 'Are there any regions you want to rule out? (select all that apply)', type: 'multi', options: ['None — I\'m open to anywhere','Sub-Saharan Africa','Middle East & North Africa','South Asia','Southeast Asia','East Asia','Central Asia','Eastern Europe','Western Europe','Central America','South America','Caribbean','Oceania','North America'] },
   { section: 5, key: 'lgbtqImportance', title: 'How important is LGBTQ+ safety and acceptance?', type: 'single', options: ['Very important — it\'s essential','Important','Somewhat important','Not relevant to me'] },
+  { section: 5, key: 'racialAcceptance', title: 'How important is racial and ethnic acceptance in your destination?', type: 'single', options: ['Very important — it\'s essential for my safety and comfort','Important — I want to feel welcome','Somewhat important','Not a major concern for me'] },
 
   // SECTION 7 — Health & Wellness
   { section: 6, key: 'healthConditions', title: 'Do you have any health conditions that affect where you can live? (select all)', type: 'multi', options: ['None','Respiratory / asthma (need clean air)','Mobility issues (need accessible infrastructure)','Chronic condition requiring regular specialist care','Mental health — climate / light affects me','Allergies (specific environments)','Dietary restrictions requiring certain food access'] },
@@ -1890,6 +1891,7 @@ SECTION 6 — SAFETY & POLITICS
 - Political stability preference: ${val(a.politicalStability)}
 - Ruled-out regions: ${arr(a.ruledOutRegions)}
 - LGBTQ+ safety importance: ${val(a.lgbtqImportance)}
+- Racial and ethnic acceptance importance: ${val(a.racialAcceptance)}
 
 SECTION 7 — HEALTH & WELLNESS
 - Health conditions affecting location: ${arr(a.healthConditions)}

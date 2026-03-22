@@ -40,6 +40,7 @@ Immediately eliminate any place that violates a hard constraint:
 - Has crime or safety levels incompatible with their stated importance score
 - Located in a region they explicitly ruled out
 - Has LGBTQ+ conditions incompatible with their stated importance
+- Has known issues with racial/ethnic discrimination or hostility toward foreigners if the user marked racial acceptance as essential or important — consider the user's likely background based on their current country and factor in real-world experiences of expats of color in candidate destinations
 - Climate is the opposite of what they require
 - Political instability incompatible with their stated preference
 
