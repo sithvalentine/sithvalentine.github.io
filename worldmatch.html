@@ -1495,6 +1495,7 @@ const questions = [
   { section: 5, key: 'ruledOutRegions', title: 'Are there any regions you want to rule out? (select all that apply)', type: 'multi', options: ['None — I\'m open to anywhere','Sub-Saharan Africa','Middle East & North Africa','South Asia','Southeast Asia','East Asia','Central Asia','Eastern Europe','Western Europe','Central America','South America','Caribbean','Oceania','North America'] },
   { section: 5, key: 'lgbtqImportance', title: 'How important is LGBTQ+ safety and acceptance?', type: 'single', options: ['Very important — it\'s essential','Important','Somewhat important','Not relevant to me'] },
   { section: 5, key: 'racialAcceptance', title: 'How important is racial and ethnic acceptance in your destination?', type: 'single', options: ['Very important — it\'s essential for my safety and comfort','Important — I want to feel welcome','Somewhat important','Not a major concern for me'] },
+  { section: 5, key: 'ethnicity', title: 'What is your racial or ethnic background? (optional — helps us give more accurate recommendations)', type: 'single', dependsOn: { key: 'racialAcceptance', values: ['Very important — it\'s essential for my safety and comfort','Important — I want to feel welcome','Somewhat important'] }, options: ['Black / African descent','East Asian','South Asian','Southeast Asian','Middle Eastern / North African','Latino / Hispanic','Pacific Islander','Indigenous / Native','White / European descent','Mixed / Multiracial','Prefer not to say'] },
 
   // SECTION 7 — Health & Wellness
   { section: 6, key: 'healthConditions', title: 'Do you have any health conditions that affect where you can live? (select all)', type: 'multi', options: ['None','Respiratory / asthma (need clean air)','Mobility issues (need accessible infrastructure)','Chronic condition requiring regular specialist care','Mental health — climate / light affects me','Allergies (specific environments)','Dietary restrictions requiring certain food access'] },
@@ -1866,7 +1867,12 @@ function validateCurrent() {
 
 function shouldSkip(q) {
   if (!q.dependsOn) return false;
-  return answers[q.dependsOn.key] !== q.dependsOn.value;
+  const current = answers[q.dependsOn.key];
+  // Support both single value and array of values
+  if (q.dependsOn.values) {
+    return !q.dependsOn.values.includes(current);
+  }
+  return current !== q.dependsOn.value;
 }
 
 function nextQuestion() {
@@ -2051,7 +2057,7 @@ SECTION 6 — SAFETY & POLITICS
 - Political stability preference: ${val(a.politicalStability)}
 - Ruled-out regions: ${arr(a.ruledOutRegions)}
 - LGBTQ+ safety importance: ${val(a.lgbtqImportance)}
-- Racial and ethnic acceptance importance: ${val(a.racialAcceptance)}
+- Racial and ethnic acceptance importance: ${val(a.racialAcceptance)}${a.ethnicity && a.ethnicity !== 'Prefer not to say' ? `\n- Ethnic background: ${a.ethnicity}` : ''}
 
 SECTION 7 — HEALTH & WELLNESS
 - Health conditions affecting location: ${arr(a.healthConditions)}
