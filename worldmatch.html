@@ -199,7 +199,7 @@
       font-weight: 700;
     }
 
-    .text-input, .select-input {
+    .select-input {
       width: 100%;
       padding: 14px 16px;
       font-size: 1rem;
@@ -211,7 +211,7 @@
       margin-bottom: 12px;
       transition: border-color 0.15s;
     }
-    .text-input:focus, .select-input:focus {
+    .select-input:focus {
       outline: none;
       border-color: var(--accent);
     }
@@ -963,8 +963,8 @@ const SECTIONS = [
 
 const questions = [
   // SECTION 1 — Current Living Situation
-  { section: 0, key: 'currentCountry', title: 'What country do you currently live in?', type: 'text', placeholder: 'e.g. United States' },
-  { section: 0, key: 'currentCity', title: 'What city or town do you currently live in?', type: 'text', placeholder: 'e.g. Austin, TX' },
+  { section: 0, key: 'currentCountry', title: 'What country do you currently live in?', type: 'select', options: ['United States','Canada','United Kingdom','Australia','Germany','France','Spain','Italy','Portugal','Netherlands','Ireland','Sweden','Norway','Denmark','Finland','Switzerland','Austria','Belgium','New Zealand','Mexico','Brazil','Argentina','Colombia','Chile','Japan','South Korea','China','India','Singapore','Thailand','Philippines','Indonesia','Vietnam','Malaysia','South Africa','Nigeria','Kenya','Egypt','United Arab Emirates','Saudi Arabia','Israel','Turkey','Poland','Czech Republic','Hungary','Romania','Greece','Croatia','Russia','Ukraine','Other'] },
+  { section: 0, key: 'currentCity', title: 'What city or area do you currently live in?', type: 'select', options: ['New York City','Los Angeles','Chicago','Houston','Phoenix','Philadelphia','San Antonio','San Diego','Dallas','Austin','San Francisco','Seattle','Denver','Boston','Nashville','Portland','Atlanta','Miami','Minneapolis','Detroit','Charlotte','Raleigh','Salt Lake City','Tampa','Orlando','Las Vegas','Washington DC','Baltimore','St. Louis','Kansas City','Columbus','Indianapolis','Milwaukee','Jacksonville','Memphis','Louisville','Oklahoma City','Sacramento','Pittsburgh','Cincinnati','Honolulu','Anchorage','London','Manchester','Birmingham','Edinburgh','Glasgow','Toronto','Vancouver','Montreal','Calgary','Ottawa','Sydney','Melbourne','Brisbane','Perth','Auckland','Wellington','Berlin','Munich','Hamburg','Frankfurt','Paris','Lyon','Marseille','Madrid','Barcelona','Valencia','Lisbon','Porto','Amsterdam','Dublin','Stockholm','Copenhagen','Oslo','Helsinki','Zurich','Vienna','Brussels','Rome','Milan','Mexico City','Guadalajara','Monterrey','São Paulo','Rio de Janeiro','Buenos Aires','Bogotá','Medellín','Santiago','Lima','Tokyo','Osaka','Seoul','Busan','Beijing','Shanghai','Mumbai','Delhi','Bangalore','Singapore','Bangkok','Manila','Jakarta','Ho Chi Minh City','Kuala Lumpur','Dubai','Abu Dhabi','Tel Aviv','Istanbul','Cape Town','Johannesburg','Lagos','Nairobi','Cairo','Warsaw','Prague','Budapest','Bucharest','Athens','Zagreb','Moscow','Kyiv','Other / Small Town'] },
   { section: 0, key: 'timeLived', title: 'How long have you lived there?', type: 'select', options: ['Less than 1 year','1–3 years','3–5 years','5–10 years','10+ years','My whole life'] },
   { section: 0, key: 'likeMost', title: 'What do you like most about where you live? (select all that apply)', type: 'multi', options: ['Low cost of living','Good weather','Close to family','Good food scene','Outdoor activities','Safe neighborhood','Strong job market','Good schools','Cultural diversity','Nightlife & entertainment','Walkable / public transit','Healthcare access','Nothing — ready to leave'] },
   { section: 0, key: 'dislikeMost', title: 'What bothers you most about where you live? (select all that apply)', type: 'multi', options: ['Too expensive','Bad weather','Too far from family','Lack of culture','Limited outdoor activities','Safety concerns','Poor job market','Bad traffic / sprawl','Political climate','Poor healthcare','Boring / nothing to do','Pollution / air quality','Isolation / loneliness'] },
@@ -977,7 +977,7 @@ const questions = [
   { section: 1, key: 'airQuality', title: 'How important is air quality to you?', type: 'slider', min: 1, max: 5, labels: ['Not important', 'Very important'] },
 
   // SECTION 3 — Lifestyle & Activities
-  { section: 2, key: 'idealSaturday', title: 'Describe your ideal Saturday in one sentence.', type: 'text', placeholder: 'e.g. Hiking in the morning, brunch with friends, then reading at a café' },
+  { section: 2, key: 'idealSaturday', title: 'What does your ideal Saturday look like?', type: 'single', options: ['Outdoor adventure — hiking, biking, or exploring nature','Beach day — sun, water, and relaxation','City exploring — cafés, shops, and street life','Social brunch — food and friends','Cultural outing — museums, galleries, or live music','Quiet day at home — reading, cooking, or gaming','Fitness focused — gym, yoga, or running','Family activities — parks, playgrounds, or day trips','Market hopping — farmers markets, flea markets, food stalls','Nightlife — bars, clubs, and live events'] },
   { section: 2, key: 'activities', title: 'What activities do you do regularly? (select all)', type: 'multi', options: ['Hiking / trekking','Surfing / water sports','Yoga / meditation','Gym / fitness','Cycling','Running / jogging','Cooking / food culture','Art / museums','Live music / concerts','Nightlife / bars','Reading / writing','Gaming','Gardening','Volunteering','Photography','None of these'] },
   { section: 2, key: 'pace', title: 'What pace of life do you prefer?', type: 'slider', min: 1, max: 5, labels: ['Very slow & relaxed', 'Very fast & busy'] },
   { section: 2, key: 'walkability', title: 'How important is walkability / public transit?', type: 'single', options: ['Essential — I don\'t want to need a car','Very important — I want good transit options','Somewhat important','Not important — I\'m fine driving everywhere'] },
@@ -1020,7 +1020,7 @@ const questions = [
   // SECTION 10 — Deal-Breakers & Dream Picks
   { section: 9, key: 'mustHaves', title: 'What are your absolute must-haves in a new home? (select all)', type: 'multi', options: ['Warm weather','Safety','Affordable cost of living','Good healthcare','English widely spoken','Fast internet','Good food','Beach access','Mountains nearby','Vibrant nightlife','Quiet and peaceful','Strong expat community','Easy visa / residency path','Good schools','Political freedom','Walkability'] },
   { section: 9, key: 'dealBreakers', title: 'What are your absolute deal-breakers? (select all)', type: 'multi', options: ['Extreme heat','Extreme cold','High crime','High cost of living','Language barrier','Poor internet','Political instability','No expat community','Far from an airport','Bad healthcare','Pollution','Anti-LGBTQ+ laws','Limited food options','Heavy bureaucracy','None — I\'m very flexible'] },
-  { section: 9, key: 'dreamDestination', title: 'Do you have a dream destination? (optional)', type: 'text', placeholder: 'e.g. Portugal, Japan, New Zealand... or leave blank' },
+  { section: 9, key: 'dreamDestination', title: 'Do you have a dream destination?', type: 'single', options: ['Portugal','Spain','Italy','Greece','France','Japan','Thailand','New Zealand','Australia','Costa Rica','Colombia','Mexico','Canada','Iceland','Norway','Switzerland','Bali / Indonesia','Vietnam','South Korea','Morocco','Croatia','Ireland','Argentina','Singapore','No preference — surprise me'] },
   { section: 9, key: 'openness', title: 'How open are you to a recommendation that surprises you?', type: 'single', options: ['Very open — surprise me!','Open if it makes sense','Somewhat cautious','I prefer well-known, popular destinations'] },
 ];
 
@@ -1058,10 +1058,6 @@ function renderQuestion() {
   html += `<h2 class="question-title">${q.title}</h2>`;
 
   switch (q.type) {
-    case 'text':
-      html += `<input class="text-input" type="text" id="q-input" placeholder="${q.placeholder || ''}" value="${existing || ''}" />`;
-      break;
-
     case 'select':
       html += `<select class="select-input" id="q-input"><option value="">Select...</option>`;
       q.options.forEach(o => {
@@ -1154,11 +1150,6 @@ function hideError() {
 function collectCurrentAnswer() {
   const q = questions[currentQ];
   switch (q.type) {
-    case 'text': {
-      const val = document.getElementById('q-input')?.value?.trim();
-      if (val) answers[q.key] = val;
-      break;
-    }
     case 'select': {
       const val = document.getElementById('q-input')?.value;
       if (val) answers[q.key] = val;
@@ -1175,11 +1166,7 @@ function collectCurrentAnswer() {
 
 function validateCurrent() {
   const q = questions[currentQ];
-  // Dream destination and some fields are optional
-  if (q.key === 'dreamDestination') return true;
-
   switch (q.type) {
-    case 'text':
     case 'select':
       return !!answers[q.key];
     case 'single':
