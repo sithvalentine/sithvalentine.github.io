@@ -20,13 +20,14 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #F5F0E8;
-      --text: #0E0E12;
-      --accent: #C8882A;
-      --card: #FFFDF8;
-      --border: #D4C9B5;
-      --muted: #6B6255;
-      --success: #4A6741;
+      --bg: #f3f0ff;
+      --text: #1e1b4b;
+      --accent: #7c3aed;
+      --accent-dark: #4f46e5;
+      --card: #ffffff;
+      --border: #d6d3e8;
+      --muted: #6b7280;
+      --success: #059669;
       --font-heading: 'Cormorant Garamond', Georgia, serif;
       --font-body: 'DM Mono', 'Courier New', monospace;
       --font-number: 'Playfair Display', Georgia, serif;
@@ -107,7 +108,7 @@
       font-family: var(--font-heading);
       font-size: clamp(1.6rem, 4vw, 2.4rem);
       font-weight: 700;
-      background: linear-gradient(135deg, #C8882A, #8B6914);
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -140,7 +141,7 @@
     }
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), #8B6914);
+      background: linear-gradient(90deg, var(--accent), var(--accent-dark));
       border-radius: 3px;
       transition: width 0.4s ease;
     }
@@ -191,11 +192,11 @@
     }
     .option-btn:hover {
       border-color: var(--accent);
-      background: #FFF8EE;
+      background: #f5f3ff;
     }
     .option-btn.selected {
       border-color: var(--accent);
-      background: #FFF3E0;
+      background: #ede9fe;
       font-weight: 700;
     }
 
@@ -275,7 +276,7 @@
     .checkbox-item:hover { border-color: var(--accent); }
     .checkbox-item.checked {
       border-color: var(--accent);
-      background: #FFF3E0;
+      background: #ede9fe;
     }
     .checkbox-item input { display: none; }
     .check-mark {
@@ -322,13 +323,13 @@
       background: var(--accent);
       color: #fff;
     }
-    .btn-next:hover { background: #B07A24; }
+    .btn-next:hover { background: #6d28d9; }
     .btn-next:disabled {
       background: var(--border);
       cursor: not-allowed;
     }
     .btn-submit {
-      background: linear-gradient(135deg, var(--accent), #8B6914);
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
       color: #fff;
       font-size: 0.95rem;
       padding: 14px 36px;
@@ -372,7 +373,7 @@
     }
     .loading-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), #8B6914);
+      background: linear-gradient(90deg, var(--accent), var(--accent-dark));
       border-radius: 4px;
       width: 0%;
       transition: width 0.8s ease;
@@ -468,7 +469,7 @@
       padding: 28px 36px;
       border-left: 4px solid var(--accent);
       margin: 24px 36px;
-      background: rgba(200,136,42,0.06);
+      background: rgba(124,58,237,0.06);
       border-radius: 0 12px 12px 0;
     }
     .intro-quote {
@@ -615,7 +616,7 @@
       color: var(--accent);
       margin-bottom: 8px;
       padding-bottom: 4px;
-      border-bottom: 1px solid rgba(200,136,42,0.2);
+      border-bottom: 1px solid rgba(124,58,237,0.2);
     }
     .card-section-text {
       font-size: 0.92rem;
@@ -627,7 +628,7 @@
     .tradeoff-block {
       border-left: 3px solid var(--accent);
       padding: 12px 16px;
-      background: rgba(200,136,42,0.04);
+      background: rgba(124,58,237,0.04);
       border-radius: 0 8px 8px 0;
       margin-bottom: 20px;
     }
@@ -660,7 +661,7 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       padding: 4px 10px;
-      background: rgba(200,136,42,0.1);
+      background: rgba(124,58,237,0.1);
       border: 1px dashed var(--accent);
       border-radius: 99px;
       color: var(--accent);
@@ -744,7 +745,7 @@
     }
     .summary-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), #8B6914);
+      background: linear-gradient(90deg, var(--accent), var(--accent-dark));
       border-radius: 4px;
       width: 0%;
       transition: width 1s ease;
@@ -798,7 +799,7 @@
       background: var(--accent);
       color: #fff;
     }
-    .btn-save:hover { background: #B07A24; }
+    .btn-save:hover { background: #6d28d9; }
     .btn-retake {
       background: transparent;
       color: var(--muted);
@@ -961,10 +962,456 @@ const SECTIONS = [
   'Deal-Breakers & Dream Picks'
 ];
 
+// ── Location data: Country → Region → Cities ──
+const LOCATIONS = {
+  'United States': {
+    'Alabama': ['Birmingham','Huntsville','Mobile','Montgomery','Tuscaloosa'],
+    'Alaska': ['Anchorage','Fairbanks','Juneau'],
+    'Arizona': ['Phoenix','Tucson','Scottsdale','Mesa','Tempe','Flagstaff'],
+    'Arkansas': ['Little Rock','Fayetteville','Fort Smith','Bentonville'],
+    'California': ['Los Angeles','San Francisco','San Diego','San Jose','Sacramento','Oakland','Fresno','Long Beach','Santa Barbara','Irvine','Pasadena','Berkeley'],
+    'Colorado': ['Denver','Colorado Springs','Boulder','Fort Collins','Aurora'],
+    'Connecticut': ['Hartford','New Haven','Stamford','Bridgeport'],
+    'Delaware': ['Wilmington','Dover'],
+    'Florida': ['Miami','Orlando','Tampa','Jacksonville','Fort Lauderdale','St. Petersburg','Sarasota','Naples','Tallahassee','Gainesville'],
+    'Georgia': ['Atlanta','Savannah','Augusta','Athens','Marietta'],
+    'Hawaii': ['Honolulu','Maui','Kailua','Hilo'],
+    'Idaho': ['Boise','Idaho Falls','Nampa'],
+    'Illinois': ['Chicago','Springfield','Naperville','Evanston','Peoria','Rockford'],
+    'Indiana': ['Indianapolis','Fort Wayne','Bloomington','South Bend','Evansville'],
+    'Iowa': ['Des Moines','Cedar Rapids','Iowa City','Davenport'],
+    'Kansas': ['Kansas City','Wichita','Topeka','Overland Park'],
+    'Kentucky': ['Louisville','Lexington','Bowling Green','Frankfort'],
+    'Louisiana': ['New Orleans','Baton Rouge','Shreveport','Lafayette','Prairieville','Lake Charles'],
+    'Maine': ['Portland','Bangor','Augusta'],
+    'Maryland': ['Baltimore','Bethesda','Annapolis','Silver Spring','Rockville'],
+    'Massachusetts': ['Boston','Cambridge','Worcester','Springfield','Salem'],
+    'Michigan': ['Detroit','Grand Rapids','Ann Arbor','Lansing','Kalamazoo'],
+    'Minnesota': ['Minneapolis','St. Paul','Rochester','Duluth','Bloomington'],
+    'Mississippi': ['Jackson','Biloxi','Hattiesburg','Gulfport'],
+    'Missouri': ['St. Louis','Kansas City','Springfield','Columbia'],
+    'Montana': ['Billings','Missoula','Bozeman','Helena'],
+    'Nebraska': ['Omaha','Lincoln','Grand Island'],
+    'Nevada': ['Las Vegas','Reno','Henderson','Carson City'],
+    'New Hampshire': ['Manchester','Nashua','Concord'],
+    'New Jersey': ['Newark','Jersey City','Princeton','Hoboken','Trenton','Atlantic City'],
+    'New Mexico': ['Albuquerque','Santa Fe','Las Cruces'],
+    'New York': ['New York City','Buffalo','Rochester','Albany','Syracuse','Ithaca'],
+    'North Carolina': ['Charlotte','Raleigh','Durham','Asheville','Greensboro','Wilmington'],
+    'North Dakota': ['Fargo','Bismarck','Grand Forks'],
+    'Ohio': ['Columbus','Cleveland','Cincinnati','Dayton','Toledo','Akron'],
+    'Oklahoma': ['Oklahoma City','Tulsa','Norman','Edmond'],
+    'Oregon': ['Portland','Eugene','Salem','Bend','Medford'],
+    'Pennsylvania': ['Philadelphia','Pittsburgh','Harrisburg','State College','Allentown'],
+    'Rhode Island': ['Providence','Newport','Warwick'],
+    'South Carolina': ['Charleston','Columbia','Greenville','Myrtle Beach'],
+    'South Dakota': ['Sioux Falls','Rapid City'],
+    'Tennessee': ['Nashville','Memphis','Knoxville','Chattanooga','Murfreesboro'],
+    'Texas': ['Houston','Dallas','Austin','San Antonio','Fort Worth','El Paso','Plano','Frisco','San Marcos','Lubbock','Corpus Christi'],
+    'Utah': ['Salt Lake City','Provo','Park City','St. George','Ogden'],
+    'Vermont': ['Burlington','Montpelier'],
+    'Virginia': ['Richmond','Virginia Beach','Arlington','Alexandria','Norfolk','Charlottesville'],
+    'Washington': ['Seattle','Tacoma','Spokane','Bellevue','Olympia','Vancouver'],
+    'Washington DC': ['Washington DC'],
+    'West Virginia': ['Charleston','Morgantown','Huntington'],
+    'Wisconsin': ['Milwaukee','Madison','Green Bay','Kenosha'],
+    'Wyoming': ['Cheyenne','Jackson','Casper']
+  },
+  'Canada': {
+    'Alberta': ['Calgary','Edmonton','Banff','Red Deer'],
+    'British Columbia': ['Vancouver','Victoria','Kelowna','Whistler'],
+    'Manitoba': ['Winnipeg','Brandon'],
+    'New Brunswick': ['Fredericton','Saint John','Moncton'],
+    'Newfoundland': ['St. John\'s'],
+    'Nova Scotia': ['Halifax','Sydney'],
+    'Ontario': ['Toronto','Ottawa','Hamilton','London','Mississauga','Kitchener','Kingston'],
+    'Prince Edward Island': ['Charlottetown'],
+    'Quebec': ['Montreal','Quebec City','Gatineau','Sherbrooke'],
+    'Saskatchewan': ['Saskatoon','Regina']
+  },
+  'United Kingdom': {
+    'England': ['London','Manchester','Birmingham','Liverpool','Leeds','Bristol','Sheffield','Newcastle','Nottingham','Brighton','Oxford','Cambridge','Bath','York'],
+    'Scotland': ['Edinburgh','Glasgow','Aberdeen','Dundee','Inverness'],
+    'Wales': ['Cardiff','Swansea','Newport'],
+    'Northern Ireland': ['Belfast','Derry']
+  },
+  'Australia': {
+    'New South Wales': ['Sydney','Newcastle','Wollongong','Byron Bay'],
+    'Victoria': ['Melbourne','Geelong','Ballarat'],
+    'Queensland': ['Brisbane','Gold Coast','Cairns','Townsville','Sunshine Coast'],
+    'Western Australia': ['Perth','Fremantle','Broome'],
+    'South Australia': ['Adelaide','Barossa Valley'],
+    'Tasmania': ['Hobart','Launceston'],
+    'ACT': ['Canberra'],
+    'Northern Territory': ['Darwin','Alice Springs']
+  },
+  'Germany': {
+    'Bavaria': ['Munich','Nuremberg','Augsburg'],
+    'Berlin': ['Berlin'],
+    'Brandenburg': ['Potsdam'],
+    'Hamburg': ['Hamburg'],
+    'Hesse': ['Frankfurt','Wiesbaden','Darmstadt'],
+    'Lower Saxony': ['Hanover','Braunschweig','Göttingen'],
+    'North Rhine-Westphalia': ['Cologne','Düsseldorf','Dortmund','Bonn','Essen'],
+    'Saxony': ['Dresden','Leipzig'],
+    'Baden-Württemberg': ['Stuttgart','Freiburg','Heidelberg','Karlsruhe'],
+    'Schleswig-Holstein': ['Kiel','Lübeck']
+  },
+  'France': {
+    'Île-de-France': ['Paris','Versailles'],
+    'Provence-Alpes-Côte d\'Azur': ['Marseille','Nice','Aix-en-Provence','Cannes','Toulon'],
+    'Auvergne-Rhône-Alpes': ['Lyon','Grenoble','Saint-Étienne','Annecy'],
+    'Nouvelle-Aquitaine': ['Bordeaux','Limoges','Biarritz'],
+    'Occitanie': ['Toulouse','Montpellier','Nîmes'],
+    'Brittany': ['Rennes','Brest','Saint-Malo'],
+    'Normandy': ['Rouen','Caen','Le Havre'],
+    'Grand Est': ['Strasbourg','Metz','Reims'],
+    'Pays de la Loire': ['Nantes','Angers','Le Mans'],
+    'Hauts-de-France': ['Lille','Amiens']
+  },
+  'Spain': {
+    'Andalusia': ['Seville','Málaga','Granada','Córdoba','Cádiz'],
+    'Catalonia': ['Barcelona','Girona','Tarragona'],
+    'Madrid': ['Madrid'],
+    'Valencia': ['Valencia','Alicante','Castellón'],
+    'Basque Country': ['Bilbao','San Sebastián','Vitoria'],
+    'Galicia': ['Santiago de Compostela','Vigo','A Coruña'],
+    'Canary Islands': ['Las Palmas','Santa Cruz de Tenerife'],
+    'Balearic Islands': ['Palma de Mallorca','Ibiza']
+  },
+  'Italy': {
+    'Lombardy': ['Milan','Bergamo','Brescia','Como'],
+    'Lazio': ['Rome'],
+    'Campania': ['Naples','Salerno','Sorrento'],
+    'Tuscany': ['Florence','Pisa','Siena','Lucca'],
+    'Veneto': ['Venice','Verona','Padua'],
+    'Piedmont': ['Turin'],
+    'Emilia-Romagna': ['Bologna','Parma','Rimini'],
+    'Liguria': ['Genoa','Cinque Terre'],
+    'Sicily': ['Palermo','Catania','Taormina'],
+    'Sardinia': ['Cagliari','Olbia'],
+    'Puglia': ['Bari','Lecce'],
+    'Trentino-Alto Adige': ['Bolzano','Trento']
+  },
+  'Portugal': {
+    'Lisbon District': ['Lisbon','Cascais','Sintra'],
+    'Porto District': ['Porto','Vila Nova de Gaia','Braga'],
+    'Algarve': ['Faro','Lagos','Albufeira','Tavira'],
+    'Madeira': ['Funchal'],
+    'Azores': ['Ponta Delgada'],
+    'Central Portugal': ['Coimbra','Aveiro','Leiria']
+  },
+  'Netherlands': {
+    'North Holland': ['Amsterdam','Haarlem'],
+    'South Holland': ['Rotterdam','The Hague','Leiden','Delft'],
+    'Utrecht': ['Utrecht'],
+    'North Brabant': ['Eindhoven','Tilburg'],
+    'Gelderland': ['Nijmegen','Arnhem'],
+    'Groningen': ['Groningen']
+  },
+  'Ireland': {
+    'Leinster': ['Dublin','Kilkenny','Drogheda'],
+    'Munster': ['Cork','Limerick','Galway','Waterford'],
+    'Connacht': ['Galway','Sligo'],
+    'Ulster': ['Donegal']
+  },
+  'Sweden': {
+    'Stockholm': ['Stockholm'],
+    'Västra Götaland': ['Gothenburg'],
+    'Skåne': ['Malmö','Lund'],
+    'Uppsala': ['Uppsala']
+  },
+  'Norway': {
+    'Oslo': ['Oslo'],
+    'Vestland': ['Bergen'],
+    'Trøndelag': ['Trondheim'],
+    'Rogaland': ['Stavanger'],
+    'Northern Norway': ['Tromsø']
+  },
+  'Denmark': {
+    'Capital Region': ['Copenhagen'],
+    'Central Jutland': ['Aarhus'],
+    'Southern Denmark': ['Odense']
+  },
+  'Finland': {
+    'Uusimaa': ['Helsinki','Espoo'],
+    'Pirkanmaa': ['Tampere'],
+    'Southwest Finland': ['Turku'],
+    'Lapland': ['Rovaniemi']
+  },
+  'Switzerland': {
+    'Zurich': ['Zurich'],
+    'Bern': ['Bern'],
+    'Geneva': ['Geneva'],
+    'Vaud': ['Lausanne'],
+    'Basel': ['Basel'],
+    'Ticino': ['Lugano']
+  },
+  'Austria': {
+    'Vienna': ['Vienna'],
+    'Salzburg': ['Salzburg'],
+    'Tyrol': ['Innsbruck'],
+    'Upper Austria': ['Linz'],
+    'Styria': ['Graz']
+  },
+  'Belgium': {
+    'Brussels': ['Brussels'],
+    'Flanders': ['Antwerp','Ghent','Bruges','Leuven'],
+    'Wallonia': ['Liège','Namur']
+  },
+  'New Zealand': {
+    'Auckland': ['Auckland'],
+    'Wellington': ['Wellington'],
+    'Canterbury': ['Christchurch'],
+    'Otago': ['Dunedin','Queenstown'],
+    'Bay of Plenty': ['Tauranga']
+  },
+  'Mexico': {
+    'Mexico City': ['Mexico City'],
+    'Jalisco': ['Guadalajara','Puerto Vallarta'],
+    'Nuevo León': ['Monterrey'],
+    'Quintana Roo': ['Cancún','Playa del Carmen','Tulum'],
+    'Baja California Sur': ['Cabo San Lucas','La Paz'],
+    'Oaxaca': ['Oaxaca City'],
+    'Yucatán': ['Mérida'],
+    'Guanajuato': ['San Miguel de Allende','Guanajuato City']
+  },
+  'Brazil': {
+    'São Paulo': ['São Paulo','Campinas','Santos'],
+    'Rio de Janeiro': ['Rio de Janeiro','Niterói'],
+    'Minas Gerais': ['Belo Horizonte'],
+    'Bahia': ['Salvador'],
+    'Paraná': ['Curitiba'],
+    'Rio Grande do Sul': ['Porto Alegre'],
+    'Santa Catarina': ['Florianópolis'],
+    'Ceará': ['Fortaleza'],
+    'Federal District': ['Brasília']
+  },
+  'Argentina': {
+    'Buenos Aires': ['Buenos Aires','La Plata'],
+    'Córdoba': ['Córdoba'],
+    'Mendoza': ['Mendoza'],
+    'Patagonia': ['Bariloche','Ushuaia'],
+    'Santa Fe': ['Rosario']
+  },
+  'Colombia': {
+    'Bogotá': ['Bogotá'],
+    'Antioquia': ['Medellín'],
+    'Valle del Cauca': ['Cali'],
+    'Bolívar': ['Cartagena'],
+    'Santander': ['Bucaramanga'],
+    'Eje Cafetero': ['Pereira','Manizales']
+  },
+  'Chile': {
+    'Santiago Metropolitan': ['Santiago'],
+    'Valparaíso': ['Valparaíso','Viña del Mar'],
+    'Biobío': ['Concepción'],
+    'Los Lagos': ['Puerto Montt','Puerto Varas']
+  },
+  'Japan': {
+    'Kantō': ['Tokyo','Yokohama','Kawasaki'],
+    'Kansai': ['Osaka','Kyoto','Kobe','Nara'],
+    'Chūbu': ['Nagoya'],
+    'Kyushu': ['Fukuoka','Nagasaki'],
+    'Hokkaido': ['Sapporo'],
+    'Tōhoku': ['Sendai'],
+    'Okinawa': ['Naha']
+  },
+  'South Korea': {
+    'Seoul Capital Area': ['Seoul','Incheon','Suwon'],
+    'Busan': ['Busan'],
+    'Gyeongsang': ['Daegu','Ulsan'],
+    'Jeju': ['Jeju City'],
+    'Chungcheong': ['Daejeon']
+  },
+  'China': {
+    'Beijing': ['Beijing'],
+    'Shanghai': ['Shanghai'],
+    'Guangdong': ['Guangzhou','Shenzhen','Dongguan'],
+    'Sichuan': ['Chengdu'],
+    'Zhejiang': ['Hangzhou','Ningbo'],
+    'Jiangsu': ['Nanjing','Suzhou'],
+    'Hubei': ['Wuhan'],
+    'Fujian': ['Xiamen'],
+    'Yunnan': ['Kunming']
+  },
+  'India': {
+    'Maharashtra': ['Mumbai','Pune'],
+    'Karnataka': ['Bangalore','Mysore'],
+    'Delhi NCR': ['New Delhi','Gurgaon','Noida'],
+    'Tamil Nadu': ['Chennai','Coimbatore'],
+    'Telangana': ['Hyderabad'],
+    'West Bengal': ['Kolkata'],
+    'Gujarat': ['Ahmedabad','Surat'],
+    'Kerala': ['Kochi','Thiruvananthapuram'],
+    'Rajasthan': ['Jaipur','Udaipur'],
+    'Goa': ['Panaji','Margao']
+  },
+  'Singapore': {
+    'Singapore': ['Singapore']
+  },
+  'Thailand': {
+    'Bangkok': ['Bangkok'],
+    'Chiang Mai': ['Chiang Mai'],
+    'Phuket': ['Phuket'],
+    'Southern Thailand': ['Koh Samui','Krabi','Hua Hin'],
+    'Isaan': ['Khon Kaen','Udon Thani'],
+    'Chiang Rai': ['Chiang Rai']
+  },
+  'Philippines': {
+    'Metro Manila': ['Manila','Makati','Quezon City','Taguig'],
+    'Cebu': ['Cebu City'],
+    'Davao': ['Davao City'],
+    'Iloilo': ['Iloilo City'],
+    'Palawan': ['Puerto Princesa']
+  },
+  'Indonesia': {
+    'Bali': ['Denpasar','Ubud','Canggu','Seminyak'],
+    'Jakarta': ['Jakarta'],
+    'Java': ['Surabaya','Yogyakarta','Bandung'],
+    'Lombok': ['Mataram']
+  },
+  'Vietnam': {
+    'Southern Vietnam': ['Ho Chi Minh City','Vung Tau'],
+    'Northern Vietnam': ['Hanoi','Ha Long'],
+    'Central Vietnam': ['Da Nang','Hoi An','Nha Trang','Dalat']
+  },
+  'Malaysia': {
+    'Kuala Lumpur': ['Kuala Lumpur'],
+    'Penang': ['George Town'],
+    'Selangor': ['Petaling Jaya','Shah Alam'],
+    'Johor': ['Johor Bahru'],
+    'Sabah': ['Kota Kinabalu'],
+    'Langkawi': ['Langkawi']
+  },
+  'South Africa': {
+    'Western Cape': ['Cape Town','Stellenbosch'],
+    'Gauteng': ['Johannesburg','Pretoria'],
+    'KwaZulu-Natal': ['Durban'],
+    'Eastern Cape': ['Port Elizabeth']
+  },
+  'Nigeria': {
+    'Lagos': ['Lagos'],
+    'Abuja FCT': ['Abuja'],
+    'Rivers': ['Port Harcourt'],
+    'Oyo': ['Ibadan']
+  },
+  'Kenya': {
+    'Nairobi': ['Nairobi'],
+    'Coast': ['Mombasa'],
+    'Rift Valley': ['Nakuru']
+  },
+  'Egypt': {
+    'Cairo': ['Cairo','Giza'],
+    'Alexandria': ['Alexandria'],
+    'Red Sea': ['Hurghada','Sharm El Sheikh'],
+    'Luxor': ['Luxor']
+  },
+  'United Arab Emirates': {
+    'Dubai': ['Dubai'],
+    'Abu Dhabi': ['Abu Dhabi'],
+    'Sharjah': ['Sharjah'],
+    'Ras Al Khaimah': ['Ras Al Khaimah']
+  },
+  'Saudi Arabia': {
+    'Riyadh': ['Riyadh'],
+    'Makkah': ['Jeddah','Mecca'],
+    'Eastern Province': ['Dammam','Khobar','Dhahran']
+  },
+  'Israel': {
+    'Tel Aviv District': ['Tel Aviv','Herzliya','Ramat Gan'],
+    'Jerusalem': ['Jerusalem'],
+    'Haifa': ['Haifa'],
+    'Central': ['Netanya']
+  },
+  'Turkey': {
+    'Istanbul': ['Istanbul'],
+    'Ankara': ['Ankara'],
+    'Antalya': ['Antalya'],
+    'Izmir': ['Izmir'],
+    'Muğla': ['Bodrum','Fethiye']
+  },
+  'Poland': {
+    'Masovia': ['Warsaw'],
+    'Lesser Poland': ['Kraków'],
+    'Lower Silesia': ['Wrocław'],
+    'Pomerania': ['Gdańsk'],
+    'Greater Poland': ['Poznań']
+  },
+  'Czech Republic': {
+    'Prague': ['Prague'],
+    'South Moravia': ['Brno'],
+    'Moravia-Silesia': ['Ostrava']
+  },
+  'Hungary': {
+    'Budapest': ['Budapest'],
+    'Hajdú-Bihar': ['Debrecen'],
+    'Baranya': ['Pécs']
+  },
+  'Romania': {
+    'Bucharest': ['Bucharest'],
+    'Cluj': ['Cluj-Napoca'],
+    'Timiș': ['Timișoara'],
+    'Brașov': ['Brașov'],
+    'Iași': ['Iași']
+  },
+  'Greece': {
+    'Attica': ['Athens','Piraeus'],
+    'Central Macedonia': ['Thessaloniki'],
+    'Crete': ['Heraklion','Chania'],
+    'South Aegean': ['Santorini','Mykonos','Rhodes']
+  },
+  'Croatia': {
+    'Zagreb': ['Zagreb'],
+    'Split-Dalmatia': ['Split'],
+    'Dubrovnik-Neretva': ['Dubrovnik'],
+    'Istria': ['Pula','Rovinj']
+  },
+  'Russia': {
+    'Moscow': ['Moscow'],
+    'Saint Petersburg': ['Saint Petersburg'],
+    'Novosibirsk': ['Novosibirsk'],
+    'Sverdlovsk': ['Yekaterinburg']
+  },
+  'Ukraine': {
+    'Kyiv': ['Kyiv'],
+    'Lviv': ['Lviv'],
+    'Odessa': ['Odessa'],
+    'Kharkiv': ['Kharkiv']
+  },
+  'Costa Rica': {
+    'San José': ['San José'],
+    'Guanacaste': ['Liberia','Tamarindo'],
+    'Puntarenas': ['Jacó','Manuel Antonio'],
+    'Limón': ['Puerto Viejo']
+  },
+  'Panama': {
+    'Panama City': ['Panama City'],
+    'Chiriquí': ['Boquete','David'],
+    'Bocas del Toro': ['Bocas del Toro']
+  },
+  'Peru': {
+    'Lima': ['Lima','Miraflores'],
+    'Cusco': ['Cusco'],
+    'Arequipa': ['Arequipa']
+  },
+  'Ecuador': {
+    'Pichincha': ['Quito'],
+    'Guayas': ['Guayaquil'],
+    'Azuay': ['Cuenca']
+  },
+  'Uruguay': {
+    'Montevideo': ['Montevideo'],
+    'Maldonado': ['Punta del Este']
+  }
+};
+
+// Fallback for countries not in detailed list
+const OTHER_COUNTRIES = ['Afghanistan','Albania','Algeria','Angola','Armenia','Azerbaijan','Bahrain','Bangladesh','Belarus','Bolivia','Bosnia and Herzegovina','Botswana','Bulgaria','Cambodia','Cameroon','Cuba','Cyprus','Dominican Republic','El Salvador','Estonia','Ethiopia','Fiji','Georgia','Ghana','Guatemala','Haiti','Honduras','Hong Kong','Iceland','Iraq','Jamaica','Jordan','Kazakhstan','Kuwait','Kyrgyzstan','Laos','Latvia','Lebanon','Libya','Lithuania','Luxembourg','Madagascar','Malta','Mauritius','Moldova','Mongolia','Montenegro','Morocco','Mozambique','Myanmar','Nepal','Nicaragua','North Macedonia','Oman','Pakistan','Palestine','Paraguay','Qatar','Senegal','Serbia','Slovakia','Slovenia','Sri Lanka','Sudan','Taiwan','Tanzania','Trinidad and Tobago','Tunisia','Turkmenistan','Uganda','Uzbekistan','Venezuela','Zambia','Zimbabwe'];
+
 const questions = [
   // SECTION 1 — Current Living Situation
-  { section: 0, key: 'currentCountry', title: 'What country do you currently live in?', type: 'select', options: ['United States','Canada','United Kingdom','Australia','Germany','France','Spain','Italy','Portugal','Netherlands','Ireland','Sweden','Norway','Denmark','Finland','Switzerland','Austria','Belgium','New Zealand','Mexico','Brazil','Argentina','Colombia','Chile','Japan','South Korea','China','India','Singapore','Thailand','Philippines','Indonesia','Vietnam','Malaysia','South Africa','Nigeria','Kenya','Egypt','United Arab Emirates','Saudi Arabia','Israel','Turkey','Poland','Czech Republic','Hungary','Romania','Greece','Croatia','Russia','Ukraine','Other'] },
-  { section: 0, key: 'currentCity', title: 'What city or area do you currently live in?', type: 'select', options: ['New York City','Los Angeles','Chicago','Houston','Phoenix','Philadelphia','San Antonio','San Diego','Dallas','Austin','San Francisco','Seattle','Denver','Boston','Nashville','Portland','Atlanta','Miami','Minneapolis','Detroit','Charlotte','Raleigh','Salt Lake City','Tampa','Orlando','Las Vegas','Washington DC','Baltimore','St. Louis','Kansas City','Columbus','Indianapolis','Milwaukee','Jacksonville','Memphis','Louisville','Oklahoma City','Sacramento','Pittsburgh','Cincinnati','Honolulu','Anchorage','London','Manchester','Birmingham','Edinburgh','Glasgow','Toronto','Vancouver','Montreal','Calgary','Ottawa','Sydney','Melbourne','Brisbane','Perth','Auckland','Wellington','Berlin','Munich','Hamburg','Frankfurt','Paris','Lyon','Marseille','Madrid','Barcelona','Valencia','Lisbon','Porto','Amsterdam','Dublin','Stockholm','Copenhagen','Oslo','Helsinki','Zurich','Vienna','Brussels','Rome','Milan','Mexico City','Guadalajara','Monterrey','São Paulo','Rio de Janeiro','Buenos Aires','Bogotá','Medellín','Santiago','Lima','Tokyo','Osaka','Seoul','Busan','Beijing','Shanghai','Mumbai','Delhi','Bangalore','Singapore','Bangkok','Manila','Jakarta','Ho Chi Minh City','Kuala Lumpur','Dubai','Abu Dhabi','Tel Aviv','Istanbul','Cape Town','Johannesburg','Lagos','Nairobi','Cairo','Warsaw','Prague','Budapest','Bucharest','Athens','Zagreb','Moscow','Kyiv','Other / Small Town'] },
+  { section: 0, key: 'currentLocation', title: 'Where do you currently live?', type: 'location' },
   { section: 0, key: 'timeLived', title: 'How long have you lived there?', type: 'select', options: ['Less than 1 year','1–3 years','3–5 years','5–10 years','10+ years','My whole life'] },
   { section: 0, key: 'likeMost', title: 'What do you like most about where you live? (select all that apply)', type: 'multi', options: ['Low cost of living','Good weather','Close to family','Good food scene','Outdoor activities','Safe neighborhood','Strong job market','Good schools','Cultural diversity','Nightlife & entertainment','Walkable / public transit','Healthcare access','Nothing — ready to leave'] },
   { section: 0, key: 'dislikeMost', title: 'What bothers you most about where you live? (select all that apply)', type: 'multi', options: ['Too expensive','Bad weather','Too far from family','Lack of culture','Limited outdoor activities','Safety concerns','Poor job market','Bad traffic / sprawl','Political climate','Poor healthcare','Boring / nothing to do','Pollution / air quality','Isolation / loneliness'] },
@@ -1058,6 +1505,10 @@ function renderQuestion() {
   html += `<h2 class="question-title">${q.title}</h2>`;
 
   switch (q.type) {
+    case 'location':
+      html += renderLocationDropdowns();
+      break;
+
     case 'select':
       html += `<select class="select-input" id="q-input"><option value="">Select...</option>`;
       q.options.forEach(o => {
@@ -1134,6 +1585,79 @@ function updateSlider(el, key) {
   answers[key] = parseInt(el.value);
 }
 
+// ── Location cascade ──
+
+function renderLocationDropdowns() {
+  // Build country list: detailed countries + other countries
+  const detailedCountries = Object.keys(LOCATIONS).sort();
+  const allCountries = [...detailedCountries, ...OTHER_COUNTRIES].sort();
+
+  const selCountry = answers.currentCountry || '';
+  const selRegion = answers.currentRegion || '';
+  const selCity = answers.currentCity || '';
+
+  let html = `<div style="display:flex;flex-direction:column;gap:12px;">`;
+
+  // Country dropdown
+  html += `<label style="font-family:var(--font-body);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Country</label>`;
+  html += `<select class="select-input" id="loc-country" onchange="onCountryChange()"><option value="">Select country...</option>`;
+  allCountries.forEach(c => {
+    html += `<option value="${c}" ${selCountry === c ? 'selected' : ''}>${c}</option>`;
+  });
+  html += `</select>`;
+
+  // Region dropdown (only if country has regions)
+  if (selCountry && LOCATIONS[selCountry]) {
+    const regions = Object.keys(LOCATIONS[selCountry]).sort();
+    html += `<label style="font-family:var(--font-body);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">State / Region</label>`;
+    html += `<select class="select-input" id="loc-region" onchange="onRegionChange()"><option value="">Select state / region...</option>`;
+    regions.forEach(r => {
+      html += `<option value="${r}" ${selRegion === r ? 'selected' : ''}>${r}</option>`;
+    });
+    html += `</select>`;
+  }
+
+  // City dropdown (only if region is selected and has cities)
+  if (selCountry && selRegion && LOCATIONS[selCountry] && LOCATIONS[selCountry][selRegion]) {
+    const cities = LOCATIONS[selCountry][selRegion].sort();
+    html += `<label style="font-family:var(--font-body);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">City</label>`;
+    html += `<select class="select-input" id="loc-city" onchange="onCityChange()"><option value="">Select city...</option>`;
+    cities.forEach(c => {
+      html += `<option value="${c}" ${selCity === c ? 'selected' : ''}>${c}</option>`;
+    });
+    html += `<option value="Other" ${selCity === 'Other' ? 'selected' : ''}>Other / Not listed</option>`;
+    html += `</select>`;
+  }
+
+  // For countries without detailed data, just show a note
+  if (selCountry && !LOCATIONS[selCountry]) {
+    answers.currentRegion = selCountry;
+    answers.currentCity = selCountry;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function onCountryChange() {
+  const country = document.getElementById('loc-country').value;
+  answers.currentCountry = country;
+  answers.currentRegion = '';
+  answers.currentCity = '';
+  renderQuestion();
+}
+
+function onRegionChange() {
+  const region = document.getElementById('loc-region').value;
+  answers.currentRegion = region;
+  answers.currentCity = '';
+  renderQuestion();
+}
+
+function onCityChange() {
+  answers.currentCity = document.getElementById('loc-city').value;
+}
+
 function showError(msg) {
   const box = document.getElementById('error-box');
   box.textContent = msg;
@@ -1150,6 +1674,12 @@ function hideError() {
 function collectCurrentAnswer() {
   const q = questions[currentQ];
   switch (q.type) {
+    case 'location': {
+      // Location answers are set by onchange handlers; just collect city if present
+      const cityEl = document.getElementById('loc-city');
+      if (cityEl && cityEl.value) answers.currentCity = cityEl.value;
+      break;
+    }
     case 'select': {
       const val = document.getElementById('q-input')?.value;
       if (val) answers[q.key] = val;
@@ -1167,6 +1697,14 @@ function collectCurrentAnswer() {
 function validateCurrent() {
   const q = questions[currentQ];
   switch (q.type) {
+    case 'location': {
+      if (!answers.currentCountry) return false;
+      // If country has regions, require region + city
+      if (LOCATIONS[answers.currentCountry]) {
+        return !!answers.currentRegion && !!answers.currentCity;
+      }
+      return true; // "Other" countries just need the country
+    }
     case 'select':
       return !!answers[q.key];
     case 'single':
@@ -1290,7 +1828,7 @@ function formatAnswers(a) {
   return `Here are my answers to the WorldMatch questionnaire. Please generate my personalized Top 5 report.
 
 SECTION 1 — CURRENT LIVING SITUATION
-- Current location: ${val(a.currentCountry)}, ${val(a.currentCity)}
+- Current location: ${val(a.currentCity)}, ${val(a.currentRegion)}, ${val(a.currentCountry)}
 - Time lived there: ${val(a.timeLived)}
 - What I like most about it: ${arr(a.likeMost)}
 - What bothers me most: ${arr(a.dislikeMost)}
