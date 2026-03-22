@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorldMatch – Find Your Ideal Place to Live | Wealth Builder Tools</title>
+  <meta name="description" content="Answer 40 questions and discover the top 5 places in the world that match your lifestyle, budget, climate preferences, and values. Powered by AI." />
+
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-6409027472747425">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6409027472747425"
+    crossorigin="anonymous"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F5F0E8;
+      --text: #0E0E12;
+      --accent: #C8882A;
+      --card: #FFFDF8;
+      --border: #D4C9B5;
+      --muted: #6B6255;
+      --success: #4A6741;
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'DM Mono', 'Courier New', monospace;
+      --font-number: 'Playfair Display', Georgia, serif;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a0533 0%, #3b0764 50%, #1a0533 100%);
+      min-height: 100vh;
+      color: var(--text);
+      padding: 28px 12px 60px;
+    }
+
+    /* ── Nav (site-wide) ── */
+    .site-nav {
+      max-width: 960px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .site-nav a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 7px 16px;
+      border-radius: 99px;
+      border: 1px solid rgba(255,255,255,0.25);
+      transition: background 0.15s, color 0.15s;
+    }
+    .site-nav a:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: block;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin: 0 auto 18px;
+      max-width: 900px;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── Ad slots ── */
+    .ad-top, .ad-bottom {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      min-height: 90px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .ad-bottom { margin-top: 20px; margin-bottom: 0; }
+
+    /* ── Main card ── */
+    .main-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 900px;
+      margin: 0 auto;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+
+    .header { text-align: center; margin-bottom: 32px; }
+    .header h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #C8882A, #8B6914);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      margin-bottom: 28px;
+    }
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #8B6914);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Sections ── */
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    /* ── Question ── */
+    .question-container {
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+    .question-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    /* ── Input types ── */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .option-btn {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+      color: var(--text);
+    }
+    .option-btn:hover {
+      border-color: var(--accent);
+      background: #FFF8EE;
+    }
+    .option-btn.selected {
+      border-color: var(--accent);
+      background: #FFF3E0;
+      font-weight: 700;
+    }
+
+    .text-input, .select-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--text);
+      margin-bottom: 12px;
+      transition: border-color 0.15s;
+    }
+    .text-input:focus, .select-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .slider-wrap {
+      margin-bottom: 16px;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .slider-value {
+      font-family: var(--font-number);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 0.88rem;
+    }
+    .checkbox-item:hover { border-color: var(--accent); }
+    .checkbox-item.checked {
+      border-color: var(--accent);
+      background: #FFF3E0;
+    }
+    .checkbox-item input { display: none; }
+    .check-mark {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .checkbox-item.checked .check-mark {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ── Navigation buttons ── */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 24px;
+    }
+    .btn {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 12px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-back {
+      background: transparent;
+      color: var(--muted);
+      border: 2px solid var(--border);
+    }
+    .btn-back:hover { border-color: var(--accent); color: var(--text); }
+    .btn-next {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-next:hover { background: #B07A24; }
+    .btn-next:disabled {
+      background: var(--border);
+      cursor: not-allowed;
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--accent), #8B6914);
+      color: #fff;
+      font-size: 0.95rem;
+      padding: 14px 36px;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+
+    /* ── API Key input (removed — using proxy) ── */
+
+    /* ══════════════════════════════════════════
+       LOADING SCREEN
+    ══════════════════════════════════════════ */
+    .loading-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .loading-screen.active { display: block; }
+    .loading-logo {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .loading-title {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+    .loading-bar-wrap {
+      max-width: 400px;
+      margin: 0 auto 32px;
+    }
+    .loading-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .loading-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #8B6914);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.8s ease;
+    }
+    .loading-pct {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .loading-steps {
+      max-width: 320px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .loading-step {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding: 6px 0;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.4s ease;
+    }
+    .loading-step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .loading-step.done { color: var(--success); }
+    .loading-step.pulse {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ══════════════════════════════════════════
+       RESULTS SCREEN
+    ══════════════════════════════════════════ */
+    .results-screen {
+      display: none;
+    }
+    .results-screen.active { display: block; }
+
+    .results-wrap {
+      background: var(--bg);
+      border-radius: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    /* Results header */
+    .results-header {
+      padding: 32px 36px;
+      border-bottom: 2px solid var(--accent);
+    }
+    .results-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .results-logo {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .results-restart {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .results-restart:hover { border-color: var(--accent); color: var(--text); }
+    .results-subtitle {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
+
+    /* Intro bar */
+    .intro-bar {
+      padding: 28px 36px;
+      border-left: 4px solid var(--accent);
+      margin: 24px 36px;
+      background: rgba(200,136,42,0.06);
+      border-radius: 0 12px 12px 0;
+    }
+    .intro-quote {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .intro-pills {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .intro-pill {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--muted);
+    }
+
+    /* Place cards shared */
+    .place-card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 32px;
+      margin: 20px 36px;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .place-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    /* Hero card #1 */
+    .hero-card {
+      padding: 48px;
+      border-top: 3px solid var(--accent);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .hero-card:hover { transform: none; }
+
+    .place-rank {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .place-score {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      width: 56px;
+      height: 56px;
+      background: var(--text);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-number);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .hero-card .place-score {
+      width: 64px;
+      height: 64px;
+      font-size: 1.4rem;
+      top: 48px;
+      right: 48px;
+    }
+
+    .place-city {
+      font-family: var(--font-heading);
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .hero-card .place-city { font-size: 64px; }
+    .place-country {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    /* Stat tiles */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .stat-tile {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .stat-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .stat-stars {
+      color: var(--accent);
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+    }
+
+    /* Stat rows (for smaller cards) */
+    .stat-rows {
+      margin-bottom: 20px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--bg);
+    }
+
+    /* Section headings in cards */
+    .card-section-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(200,136,42,0.2);
+    }
+    .card-section-text {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .tradeoff-block {
+      border-left: 3px solid var(--accent);
+      padding: 12px 16px;
+      background: rgba(200,136,42,0.04);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 20px;
+    }
+    .tradeoff-block .card-section-label {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .place-meta {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .place-meta-item {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .place-meta-item strong {
+      color: var(--text);
+    }
+
+    /* Wildcard badge */
+    .wildcard-badge {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      background: rgba(200,136,42,0.1);
+      border: 1px dashed var(--accent);
+      border-radius: 99px;
+      color: var(--accent);
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .wildcard-card {
+      border-style: dashed;
+      border-color: var(--accent);
+    }
+
+    /* Card grid */
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 0 36px;
+    }
+    .cards-row .place-card {
+      margin: 0;
+    }
+
+    /* Compact cards */
+    .compact-card .place-city { font-size: 28px; }
+    .compact-card .place-score {
+      width: 44px;
+      height: 44px;
+      font-size: 1rem;
+      top: 24px;
+      right: 24px;
+    }
+    .compact-card {
+      padding: 24px;
+    }
+
+    /* Summary table */
+    .summary-section {
+      margin: 32px 36px;
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 32px;
+      overflow-x: auto;
+    }
+    .summary-title {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .summary-table th {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-table td {
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--bg);
+    }
+    .summary-table tr:nth-child(even) { background: var(--bg); }
+    .summary-bar-cell {
+      min-width: 80px;
+    }
+    .summary-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .summary-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #8B6914);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 1s ease;
+    }
+    .summary-score {
+      font-family: var(--font-number);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Next steps */
+    .next-steps {
+      margin: 32px 36px;
+      padding: 32px;
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .next-steps-title {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .next-steps-text {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text);
+      max-width: 600px;
+      margin: 0 auto 24px;
+    }
+    .next-steps-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-cta {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-save {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-save:hover { background: #B07A24; }
+    .btn-retake {
+      background: transparent;
+      color: var(--muted);
+      border: 2px solid var(--border);
+    }
+    .btn-retake:hover { border-color: var(--accent); color: var(--text); }
+
+    .results-footer {
+      text-align: center;
+      padding: 24px 36px 32px;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* ── Error ── */
+    .error-msg {
+      background: #FFF0F0;
+      border: 1px solid #E8A0A0;
+      border-radius: 10px;
+      padding: 16px;
+      color: #8B2020;
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    /* ── Hidden ── */
+    .hidden { display: none !important; }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .main-card { padding: 24px 18px; }
+      .cards-row { grid-template-columns: 1fr; padding: 0 16px; }
+      .hero-card { padding: 24px; }
+      .hero-card .place-city { font-size: 40px; }
+      .place-city { font-size: 32px; }
+      .hero-card .place-score { top: 24px; right: 24px; width: 50px; height: 50px; font-size: 1.1rem; }
+      .place-card { margin: 16px 16px; padding: 20px; }
+      .results-header { padding: 20px 16px; }
+      .intro-bar { margin: 16px; padding: 20px 16px; }
+      .summary-section { margin: 20px 16px; padding: 20px; }
+      .next-steps { margin: 20px 16px; padding: 20px; }
+      .results-footer { padding: 20px 16px; }
+      .stat-grid { grid-template-columns: 1fr; }
+      .options-grid { grid-template-columns: 1fr; }
+      .checkbox-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up {
+      animation: fadeUp 0.5s ease forwards;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <a href="https://sithvalentine.github.io">🏠 Home</a>
+    <a href="https://sithvalentine.github.io/articles.html">📰 Articles</a>
+    <a href="https://sithvalentine.github.io/about.html">About</a>
+    <a href="https://sithvalentine.github.io/contact.html">Contact</a>
+  </nav>
+
+  <a href="https://sithvalentine.github.io" class="back-link">← Back to all tools</a>
+
+  <div class="ad-top">AD SLOT</div>
+
+  <!-- ══════════════════════════════════════════
+       QUESTIONNAIRE
+  ══════════════════════════════════════════ -->
+  <div class="main-card" id="quiz-card">
+    <div class="header">
+      <h1>◈ WorldMatch</h1>
+      <p>Find the 5 best places in the world for you to live</p>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="progress-section">Section 1 of 10</span>
+        <span id="progress-q">Question 1 of 40</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 2.5%"></div>
+      </div>
+    </div>
+
+    <div class="question-container" id="question-container">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div id="error-box" class="error-msg"></div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-back" id="btn-prev" onclick="prevQuestion()">← Back</button>
+      <button class="btn btn-next" id="btn-next" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       LOADING SCREEN
+  ══════════════════════════════════════════ -->
+  <div class="main-card loading-screen" id="loading-screen">
+    <div class="loading-logo">◈ WorldMatch</div>
+    <div class="loading-title">Analyzing your answers...</div>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar">
+        <div class="loading-bar-fill" id="loading-fill"></div>
+      </div>
+      <div class="loading-pct" id="loading-pct">0%</div>
+    </div>
+    <div class="loading-steps">
+      <div class="loading-step" id="ls-1">✓ Filtering 195 countries</div>
+      <div class="loading-step" id="ls-2">✓ Weighing your priorities</div>
+      <div class="loading-step" id="ls-3">✓ Scoring 847 cities</div>
+      <div class="loading-step" id="ls-4">◌ Writing your personal report...</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       RESULTS SCREEN
+  ══════════════════════════════════════════ -->
+  <div class="results-screen" id="results-screen">
+    <div class="results-wrap" id="results-wrap">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <div class="ad-bottom">AD SLOT</div>
+
+  <footer style="text-align:center;color:rgba(255,255,255,0.55);font-size:0.8rem;margin-top:24px;">
+    <p>© 2026 Wealth Builder Tools</p>
+    <p style="margin-top:4px;">
+      <a href="https://sithvalentine.github.io/privacy-policy.html" style="color:rgba(255,255,255,0.75);text-decoration:none;">Privacy</a> ·
+      <a href="https://sithvalentine.github.io/disclaimer.html" style="color:rgba(255,255,255,0.75);text-decoration:none;">Disclaimer</a>
+    </p>
+  </footer>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// QUESTIONS DATA
+// ══════════════════════════════════════════════════════════
+
+const SECTIONS = [
+  'Current Living Situation',
+  'Climate & Environment',
+  'Lifestyle & Activities',
+  'Work & Financial',
+  'Family & Social',
+  'Safety & Politics',
+  'Health & Wellness',
+  'Language & Culture',
+  'Connectivity & Travel',
+  'Deal-Breakers & Dream Picks'
+];
+
+const questions = [
+  // SECTION 1 — Current Living Situation
+  { section: 0, key: 'currentCountry', title: 'What country do you currently live in?', type: 'text', placeholder: 'e.g. United States' },
+  { section: 0, key: 'currentCity', title: 'What city or town do you currently live in?', type: 'text', placeholder: 'e.g. Austin, TX' },
+  { section: 0, key: 'timeLived', title: 'How long have you lived there?', type: 'select', options: ['Less than 1 year','1–3 years','3–5 years','5–10 years','10+ years','My whole life'] },
+  { section: 0, key: 'likeMost', title: 'What do you like most about where you live? (select all that apply)', type: 'multi', options: ['Low cost of living','Good weather','Close to family','Good food scene','Outdoor activities','Safe neighborhood','Strong job market','Good schools','Cultural diversity','Nightlife & entertainment','Walkable / public transit','Healthcare access','Nothing — ready to leave'] },
+  { section: 0, key: 'dislikeMost', title: 'What bothers you most about where you live? (select all that apply)', type: 'multi', options: ['Too expensive','Bad weather','Too far from family','Lack of culture','Limited outdoor activities','Safety concerns','Poor job market','Bad traffic / sprawl','Political climate','Poor healthcare','Boring / nothing to do','Pollution / air quality','Isolation / loneliness'] },
+
+  // SECTION 2 — Climate & Environment
+  { section: 1, key: 'temperature', title: 'What is your ideal temperature range?', type: 'single', options: ['Hot year-round (85°F+ / 30°C+)','Warm year-round (70–85°F / 21–30°C)','Mild with seasons (50–80°F / 10–27°C)','Cool and temperate (40–65°F / 4–18°C)','I love cold winters (below 40°F / 4°C)'] },
+  { section: 1, key: 'humidity', title: 'What is your humidity preference?', type: 'single', options: ['Dry and arid','Low humidity','Moderate humidity','I don\'t mind humidity','Tropical / high humidity is fine'] },
+  { section: 1, key: 'seasons', title: 'How important are distinct seasons to you?', type: 'single', options: ['I want 4 clear seasons','I prefer 2 seasons (warm/cool)','I want the same weather year-round','I have no strong preference'] },
+  { section: 1, key: 'nature', title: 'What natural environments do you prefer nearby? (select all)', type: 'multi', options: ['Beach / ocean','Mountains','Forests / greenery','Desert / dry landscapes','Lakes / rivers','Tropical jungle','Rolling hills / countryside','Snow / alpine','Urban — nature isn\'t a priority'] },
+  { section: 1, key: 'airQuality', title: 'How important is air quality to you?', type: 'slider', min: 1, max: 5, labels: ['Not important', 'Very important'] },
+
+  // SECTION 3 — Lifestyle & Activities
+  { section: 2, key: 'idealSaturday', title: 'Describe your ideal Saturday in one sentence.', type: 'text', placeholder: 'e.g. Hiking in the morning, brunch with friends, then reading at a café' },
+  { section: 2, key: 'activities', title: 'What activities do you do regularly? (select all)', type: 'multi', options: ['Hiking / trekking','Surfing / water sports','Yoga / meditation','Gym / fitness','Cycling','Running / jogging','Cooking / food culture','Art / museums','Live music / concerts','Nightlife / bars','Reading / writing','Gaming','Gardening','Volunteering','Photography','None of these'] },
+  { section: 2, key: 'pace', title: 'What pace of life do you prefer?', type: 'slider', min: 1, max: 5, labels: ['Very slow & relaxed', 'Very fast & busy'] },
+  { section: 2, key: 'walkability', title: 'How important is walkability / public transit?', type: 'single', options: ['Essential — I don\'t want to need a car','Very important — I want good transit options','Somewhat important','Not important — I\'m fine driving everywhere'] },
+  { section: 2, key: 'areaType', title: 'What type of area do you want to live in?', type: 'single', options: ['Major city center','Urban but not downtown','Suburban','Small town','Rural / countryside','Coastal village','Mountain town'] },
+
+  // SECTION 4 — Work & Financial
+  { section: 3, key: 'workSituation', title: 'What is your work situation?', type: 'single', options: ['Remote worker (location-independent)','Looking for local employment','Self-employed / freelancer','Retired','Student','Entrepreneur — starting a business','Not currently working'] },
+  { section: 3, key: 'budget', title: 'What is your monthly living budget (USD)?', type: 'single', options: ['Under $1,000','$1,000 – $2,000','$2,000 – $3,500','$3,500 – $5,000','$5,000 – $8,000','$8,000+','Flexible / no set budget'] },
+  { section: 3, key: 'costImportance', title: 'How important is low cost of living?', type: 'slider', min: 1, max: 5, labels: ['Not important', 'Top priority'] },
+  { section: 3, key: 'taxImportance', title: 'How important is low or favorable tax treatment?', type: 'single', options: ['Very important — it\'s a key factor','Somewhat important','Not a priority','I haven\'t thought about it'] },
+
+  // SECTION 5 — Family & Social
+  { section: 4, key: 'relationshipStatus', title: 'What is your relationship status?', type: 'single', options: ['Single','In a relationship','Married / domestic partner','Relocating with family','It\'s complicated'] },
+  { section: 4, key: 'children', title: 'Do you have or plan to have children?', type: 'single', options: ['No children, not planning','No children, but planning','Young children (under 6)','School-age children (6–18)','Adult children / empty nester'] },
+  { section: 4, key: 'proximityHome', title: 'How important is staying close to your home country / family?', type: 'slider', min: 1, max: 5, labels: ['Not important at all', 'Must be nearby'] },
+  { section: 4, key: 'socialCommunity', title: 'What kind of social community do you want?', type: 'single', options: ['Strong expat / international community','Local community — I want to integrate','A mix of both','Digital nomad / co-working community','I prefer solitude','Family-oriented community'] },
+
+  // SECTION 6 — Safety & Politics
+  { section: 5, key: 'safetyImportance', title: 'How important is personal safety?', type: 'slider', min: 1, max: 5, labels: ['Not a concern', 'Top priority'] },
+  { section: 5, key: 'politicalStability', title: 'How important is political stability?', type: 'single', options: ['Very important — I want a stable democracy','Important but not a dealbreaker','I\'m flexible','I don\'t care about politics'] },
+  { section: 5, key: 'ruledOutRegions', title: 'Are there any regions you want to rule out? (select all that apply)', type: 'multi', options: ['None — I\'m open to anywhere','Sub-Saharan Africa','Middle East & North Africa','South Asia','Southeast Asia','East Asia','Central Asia','Eastern Europe','Western Europe','Central America','South America','Caribbean','Oceania','North America'] },
+  { section: 5, key: 'lgbtqImportance', title: 'How important is LGBTQ+ safety and acceptance?', type: 'single', options: ['Very important — it\'s essential','Important','Somewhat important','Not relevant to me'] },
+
+  // SECTION 7 — Health & Wellness
+  { section: 6, key: 'healthConditions', title: 'Do you have any health conditions that affect where you can live? (select all)', type: 'multi', options: ['None','Respiratory / asthma (need clean air)','Mobility issues (need accessible infrastructure)','Chronic condition requiring regular specialist care','Mental health — climate / light affects me','Allergies (specific environments)','Dietary restrictions requiring certain food access'] },
+  { section: 6, key: 'healthcareImportance', title: 'How important is healthcare access and quality?', type: 'slider', min: 1, max: 5, labels: ['Not important', 'Critical'] },
+  { section: 6, key: 'diet', title: 'Do you have any dietary needs the destination must support? (select all)', type: 'multi', options: ['No special requirements','Vegetarian','Vegan','Halal','Kosher','Gluten-free','Organic / farm-to-table access','Keto / specialty diet'] },
+
+  // SECTION 8 — Language & Culture
+  { section: 7, key: 'languages', title: 'What languages do you speak? (select all)', type: 'multi', options: ['English','Spanish','French','Portuguese','German','Italian','Mandarin','Japanese','Arabic','Hindi','Russian','Korean','Dutch','Other'] },
+  { section: 7, key: 'languageComfort', title: 'How comfortable are you living somewhere you don\'t speak the local language?', type: 'single', options: ['Very comfortable — I\'ll learn','Somewhat comfortable with English widely spoken','I need English to be common','I only want English-speaking countries'] },
+  { section: 7, key: 'culturalSimilarity', title: 'How important is cultural similarity to your home country?', type: 'slider', min: 1, max: 5, labels: ['I want very different', 'Must be similar'] },
+  { section: 7, key: 'culturalScene', title: 'What cultural scenes matter most? (select up to 3)', type: 'multi', maxSelect: 3, options: ['Food / culinary scene','Music / nightlife','Art / museums / galleries','Outdoor / adventure culture','Spiritual / wellness culture','Tech / startup scene','Academic / intellectual','Sports culture','Fashion / design','History / architecture','None in particular'] },
+
+  // SECTION 9 — Connectivity & Travel
+  { section: 8, key: 'travelFrequency', title: 'How often do you plan to travel internationally?', type: 'single', options: ['Very frequently (monthly)','Often (every 2–3 months)','A few times a year','Rarely','Not at all'] },
+  { section: 8, key: 'airportImportance', title: 'How important is proximity to a major international airport?', type: 'slider', min: 1, max: 5, labels: ['Not important', 'Essential'] },
+  { section: 8, key: 'internetImportance', title: 'How important is fast, reliable internet?', type: 'single', options: ['Critical — I work online','Very important','Somewhat important','Not a big deal'] },
+
+  // SECTION 10 — Deal-Breakers & Dream Picks
+  { section: 9, key: 'mustHaves', title: 'What are your absolute must-haves in a new home? (select all)', type: 'multi', options: ['Warm weather','Safety','Affordable cost of living','Good healthcare','English widely spoken','Fast internet','Good food','Beach access','Mountains nearby','Vibrant nightlife','Quiet and peaceful','Strong expat community','Easy visa / residency path','Good schools','Political freedom','Walkability'] },
+  { section: 9, key: 'dealBreakers', title: 'What are your absolute deal-breakers? (select all)', type: 'multi', options: ['Extreme heat','Extreme cold','High crime','High cost of living','Language barrier','Poor internet','Political instability','No expat community','Far from an airport','Bad healthcare','Pollution','Anti-LGBTQ+ laws','Limited food options','Heavy bureaucracy','None — I\'m very flexible'] },
+  { section: 9, key: 'dreamDestination', title: 'Do you have a dream destination? (optional)', type: 'text', placeholder: 'e.g. Portugal, Japan, New Zealand... or leave blank' },
+  { section: 9, key: 'openness', title: 'How open are you to a recommendation that surprises you?', type: 'single', options: ['Very open — surprise me!','Open if it makes sense','Somewhat cautious','I prefer well-known, popular destinations'] },
+];
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+
+let currentQ = 0;
+const answers = {};
+
+// ══════════════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════════════
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const container = document.getElementById('question-container');
+  const existing = answers[q.key];
+
+  // Update progress
+  document.getElementById('progress-section').textContent = `Section ${q.section + 1} of 10 — ${SECTIONS[q.section]}`;
+  document.getElementById('progress-q').textContent = `Question ${currentQ + 1} of ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+
+  // Update buttons
+  document.getElementById('btn-prev').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+  const isLast = currentQ === questions.length - 1;
+  const btnNext = document.getElementById('btn-next');
+  btnNext.textContent = isLast ? 'Get My Results →' : 'Next →';
+  btnNext.className = isLast ? 'btn btn-submit' : 'btn btn-next';
+
+  hideError();
+
+  let html = `<div class="section-label">${SECTIONS[q.section]}</div>`;
+  html += `<h2 class="question-title">${q.title}</h2>`;
+
+  switch (q.type) {
+    case 'text':
+      html += `<input class="text-input" type="text" id="q-input" placeholder="${q.placeholder || ''}" value="${existing || ''}" />`;
+      break;
+
+    case 'select':
+      html += `<select class="select-input" id="q-input"><option value="">Select...</option>`;
+      q.options.forEach(o => {
+        html += `<option value="${o}" ${existing === o ? 'selected' : ''}>${o}</option>`;
+      });
+      html += `</select>`;
+      break;
+
+    case 'single':
+      html += `<div class="options-grid">`;
+      q.options.forEach(o => {
+        html += `<button class="option-btn ${existing === o ? 'selected' : ''}" onclick="selectSingle(this, '${q.key}')" data-value="${o}">${o}</button>`;
+      });
+      html += `</div>`;
+      break;
+
+    case 'multi':
+      const checked = existing || [];
+      html += `<div class="checkbox-grid">`;
+      q.options.forEach(o => {
+        const isChecked = checked.includes(o);
+        html += `<label class="checkbox-item ${isChecked ? 'checked' : ''}" onclick="toggleCheck(this, '${q.key}', ${q.maxSelect || 0})">
+          <input type="checkbox" value="${o}" ${isChecked ? 'checked' : ''} />
+          <span class="check-mark">${isChecked ? '✓' : ''}</span>
+          <span>${o}</span>
+        </label>`;
+      });
+      html += `</div>`;
+      if (q.maxSelect) {
+        html += `<div style="font-size:0.75rem;color:var(--muted);font-family:var(--font-body);">Select up to ${q.maxSelect}</div>`;
+      }
+      break;
+
+    case 'slider':
+      const val = existing || 3;
+      html += `<div class="slider-wrap">
+        <div class="slider-value" id="slider-val">${val}</div>
+        <input type="range" min="${q.min}" max="${q.max}" value="${val}" id="q-slider" oninput="updateSlider(this, '${q.key}')" />
+        <div class="slider-labels"><span>${q.labels[0]}</span><span>${q.labels[1]}</span></div>
+      </div>`;
+      answers[q.key] = val;
+      break;
+  }
+
+  container.innerHTML = html;
+}
+
+function selectSingle(btn, key) {
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[key] = btn.dataset.value;
+}
+
+function toggleCheck(label, key, maxSelect) {
+  const input = label.querySelector('input');
+  if (!answers[key]) answers[key] = [];
+
+  if (!input.checked) {
+    if (maxSelect && answers[key].length >= maxSelect) return;
+    input.checked = true;
+    label.classList.add('checked');
+    label.querySelector('.check-mark').textContent = '✓';
+    answers[key].push(input.value);
+  } else {
+    input.checked = false;
+    label.classList.remove('checked');
+    label.querySelector('.check-mark').textContent = '';
+    answers[key] = answers[key].filter(v => v !== input.value);
+  }
+}
+
+function updateSlider(el, key) {
+  document.getElementById('slider-val').textContent = el.value;
+  answers[key] = parseInt(el.value);
+}
+
+function showError(msg) {
+  const box = document.getElementById('error-box');
+  box.textContent = msg;
+  box.classList.add('visible');
+}
+function hideError() {
+  document.getElementById('error-box').classList.remove('visible');
+}
+
+// ══════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════
+
+function collectCurrentAnswer() {
+  const q = questions[currentQ];
+  switch (q.type) {
+    case 'text': {
+      const val = document.getElementById('q-input')?.value?.trim();
+      if (val) answers[q.key] = val;
+      break;
+    }
+    case 'select': {
+      const val = document.getElementById('q-input')?.value;
+      if (val) answers[q.key] = val;
+      break;
+    }
+    case 'slider': {
+      const val = document.getElementById('q-slider')?.value;
+      if (val) answers[q.key] = parseInt(val);
+      break;
+    }
+    // single and multi are handled by click handlers
+  }
+}
+
+function validateCurrent() {
+  const q = questions[currentQ];
+  // Dream destination and some fields are optional
+  if (q.key === 'dreamDestination') return true;
+
+  switch (q.type) {
+    case 'text':
+    case 'select':
+      return !!answers[q.key];
+    case 'single':
+      return !!answers[q.key];
+    case 'multi':
+      return answers[q.key] && answers[q.key].length > 0;
+    case 'slider':
+      return true; // sliders always have a value
+  }
+  return true;
+}
+
+function nextQuestion() {
+  collectCurrentAnswer();
+  if (!validateCurrent()) {
+    showError('Please answer this question before continuing.');
+    return;
+  }
+
+  if (currentQ === questions.length - 1) {
+    submitQuiz();
+    return;
+  }
+
+  currentQ++;
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevQuestion() {
+  collectCurrentAnswer();
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// API KEY & SUBMISSION
+// ══════════════════════════════════════════════════════════
+
+async function submitQuiz() {
+  // Show loading screen
+  document.getElementById('quiz-card').classList.add('hidden');
+  const loadingScreen = document.getElementById('loading-screen');
+  loadingScreen.classList.add('active');
+
+  // Animate loading steps
+  animateLoading();
+
+  try {
+    const prompt = formatAnswers(answers);
+    const result = await callClaude(prompt);
+    showResults(result);
+  } catch (err) {
+    loadingScreen.classList.remove('active');
+    document.getElementById('quiz-card').classList.remove('hidden');
+    showError('Error generating report: ' + err.message + ' — Please try again in a moment.');
+  }
+}
+
+function animateLoading() {
+  const steps = ['ls-1','ls-2','ls-3','ls-4'];
+  const fill = document.getElementById('loading-fill');
+  const pct = document.getElementById('loading-pct');
+
+  steps.forEach((id, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      el.classList.add('visible');
+      if (i < 3) el.classList.add('done');
+      if (i === 3) el.classList.add('pulse');
+      const progress = Math.min(25 + (i * 22), 90);
+      fill.style.width = progress + '%';
+      pct.textContent = progress + '%';
+    }, 1500 * (i + 1));
+  });
+}
+
+function finishLoading() {
+  document.getElementById('loading-fill').style.width = '100%';
+  document.getElementById('loading-pct').textContent = '100%';
+  const ls4 = document.getElementById('ls-4');
+  ls4.classList.remove('pulse');
+  ls4.classList.add('done');
+  ls4.textContent = '✓ Report complete!';
+}
+
+// ══════════════════════════════════════════════════════════
+// CLAUDE API CALL
+// ══════════════════════════════════════════════════════════
+
+// ── Proxy URL — update this after deploying the Cloudflare Worker ──
+const WORKER_URL = 'https://worldmatch-proxy.worldmatch.workers.dev';
+
+async function callClaude(prompt) {
+  const response = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+
+  if (!response.ok) {
+    const errBody = await response.json().catch(() => ({}));
+    throw new Error(errBody.error || `Request failed (${response.status})`);
+  }
+
+  const data = await response.json();
+  return data.result;
+}
+
+// ══════════════════════════════════════════════════════════
+// FORMAT ANSWERS
+// ══════════════════════════════════════════════════════════
+
+function formatAnswers(a) {
+  const arr = v => Array.isArray(v) ? v.join(', ') : (v || 'Not specified');
+  const val = v => v || 'Not specified';
+  const num = v => v !== undefined ? v + '/5' : 'Not specified';
+
+  return `Here are my answers to the WorldMatch questionnaire. Please generate my personalized Top 5 report.
+
+SECTION 1 — CURRENT LIVING SITUATION
+- Current location: ${val(a.currentCountry)}, ${val(a.currentCity)}
+- Time lived there: ${val(a.timeLived)}
+- What I like most about it: ${arr(a.likeMost)}
+- What bothers me most: ${arr(a.dislikeMost)}
+
+SECTION 2 — CLIMATE & ENVIRONMENT
+- Ideal temperature: ${val(a.temperature)}
+- Humidity preference: ${val(a.humidity)}
+- Seasons importance: ${val(a.seasons)}
+- Preferred natural environment: ${arr(a.nature)}
+- Air quality importance: ${num(a.airQuality)}
+
+SECTION 3 — LIFESTYLE & ACTIVITIES
+- Ideal Saturday: ${val(a.idealSaturday)}
+- Regular activities: ${arr(a.activities)}
+- Preferred pace of life: ${num(a.pace)}
+- Walkability importance: ${val(a.walkability)}
+- Preferred area type: ${val(a.areaType)}
+
+SECTION 4 — WORK & FINANCIAL
+- Work situation: ${val(a.workSituation)}
+- Monthly budget: ${val(a.budget)}
+- Cost of living importance: ${num(a.costImportance)}
+- Low tax importance: ${val(a.taxImportance)}
+
+SECTION 5 — FAMILY & SOCIAL
+- Relationship status: ${val(a.relationshipStatus)}
+- Children situation: ${val(a.children)}
+- Proximity to home importance: ${num(a.proximityHome)}
+- Preferred social community: ${val(a.socialCommunity)}
+
+SECTION 6 — SAFETY & POLITICS
+- Personal safety importance: ${num(a.safetyImportance)}
+- Political stability preference: ${val(a.politicalStability)}
+- Ruled-out regions: ${arr(a.ruledOutRegions)}
+- LGBTQ+ safety importance: ${val(a.lgbtqImportance)}
+
+SECTION 7 — HEALTH & WELLNESS
+- Health conditions affecting location: ${arr(a.healthConditions)}
+- Healthcare access importance: ${num(a.healthcareImportance)}
+- Dietary needs: ${arr(a.diet)}
+
+SECTION 8 — LANGUAGE & CULTURE
+- Languages spoken: ${arr(a.languages)}
+- Language barrier comfort: ${val(a.languageComfort)}
+- Cultural similarity importance: ${num(a.culturalSimilarity)}
+- Cultural scene priorities: ${arr(a.culturalScene)}
+
+SECTION 9 — CONNECTIVITY & TRAVEL
+- International travel frequency: ${val(a.travelFrequency)}
+- Airport proximity importance: ${num(a.airportImportance)}
+- Internet reliability importance: ${val(a.internetImportance)}
+
+SECTION 10 — DEAL-BREAKERS & DREAM PICKS
+- Must-haves: ${arr(a.mustHaves)}
+- Deal-breakers: ${arr(a.dealBreakers)}
+- Dream destination: ${val(a.dreamDestination) || 'No preference / surprise me'}
+- Openness to unexpected recommendation: ${val(a.openness)}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// PARSE RESULTS
+// ══════════════════════════════════════════════════════════
+
+function parseResults(markdownText) {
+  const results = {
+    intro: '',
+    places: [],
+    summaryTable: [],
+    nextSteps: ''
+  };
+
+  // Extract intro note
+  const introMatch = markdownText.match(/## A note on where you are now\n([\s\S]*?)(?=##\s[🥇])/);
+  if (introMatch) results.intro = introMatch[1].trim().replace(/^---+\s*/gm, '');
+
+  // Extract next steps
+  const nextMatch = markdownText.match(/## 🧭 Your Next Step\n([\s\S]*?)$/);
+  if (nextMatch) results.nextSteps = nextMatch[1].trim().replace(/^---+\s*/gm, '');
+
+  // Extract each place
+  const placeRegex = /## [🥇🥈🥉4️⃣5️⃣].+?—\s*(.+?),\s*(.+?)(?:\s*✨.*)?\n([\s\S]*?)(?=## [🥇🥈🥉4️⃣5️⃣]|## 📊|$)/g;
+  let match;
+
+  while ((match = placeRegex.exec(markdownText)) !== null) {
+    const block = match[3];
+    const place = {
+      city: match[1].trim(),
+      country: match[2].trim().replace(/\s*✨.*/, ''),
+      isWildcard: block.includes('Wildcard') || block.includes('surprise you'),
+      whyMatch: extractSection(block, "Why it's your"),
+      comparison: extractSection(block, 'How it compares'),
+      lifestyle: extractSection(block, 'Your lifestyle here'),
+      tradeoff: extractSection(block, 'The honest trade-off'),
+      bestArea: extractInline(block, 'Best area to explore'),
+      idealFor: extractInline(block, 'Ideal for someone who'),
+      score: extractScore(block),
+      stars: extractStars(block)
+    };
+    results.places.push(place);
+  }
+
+  // Extract summary table
+  const tableRegex = /\|\s*(.+?)\s*\|\s*(⭐+)\s*\|\s*(⭐+)\s*\|\s*(⭐+)\s*\|\s*(⭐+)\s*\|\s*(\d+)\/100\s*\|/g;
+  let tableMatch;
+  while ((tableMatch = tableRegex.exec(markdownText)) !== null) {
+    results.summaryTable.push({
+      name: tableMatch[1].trim(),
+      climate: tableMatch[2].length,
+      cost: tableMatch[3].length,
+      safety: tableMatch[4].length,
+      lifestyle: tableMatch[5].length,
+      score: parseInt(tableMatch[6])
+    });
+  }
+
+  return results;
+}
+
+function extractSection(block, heading) {
+  const regex = new RegExp(`\\*\\*${heading}[^*]*\\*\\*\\n([\\s\\S]*?)(?=\\n\\*\\*|$)`);
+  const match = block.match(regex);
+  return match ? match[1].trim() : '';
+}
+
+function extractInline(block, label) {
+  const regex = new RegExp(`\\*\\*${label}:\\*\\*\\s*(.+)`);
+  const match = block.match(regex);
+  return match ? match[1].trim() : '';
+}
+
+function extractScore(block) {
+  const match = block.match(/\*\*Match score:\*\*\s*(\d+)\/100/);
+  return match ? parseInt(match[1]) : null;
+}
+
+function extractStars(block) {
+  return {
+    climate: (block.match(/Climate[\s\S]{0,30}?(⭐+)/) || [])[1]?.length || 0,
+    cost: (block.match(/Cost[\s\S]{0,30}?(⭐+)/) || [])[1]?.length || 0,
+    safety: (block.match(/Safety[\s\S]{0,30}?(⭐+)/) || [])[1]?.length || 0,
+    lifestyle: (block.match(/Lifestyle[\s\S]{0,30}?(⭐+)/) || [])[1]?.length || 0
+  };
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER RESULTS
+// ══════════════════════════════════════════════════════════
+
+function showResults(markdown) {
+  finishLoading();
+
+  setTimeout(() => {
+    const data = parseResults(markdown);
+    const loadingScreen = document.getElementById('loading-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const wrap = document.getElementById('results-wrap');
+
+    // Build profile pills from answers
+    const budgetLabel = answers.budget || 'Flexible';
+    const climateLabel = answers.temperature ? answers.temperature.split('(')[0].trim() : 'Any';
+    const paceLabels = ['Very relaxed','Relaxed','Moderate','Active','Very active'];
+    const paceLabel = paceLabels[(answers.pace || 3) - 1];
+
+    let html = '';
+
+    // Header
+    html += `<div class="results-header fade-up">
+      <div class="results-header-top">
+        <span class="results-logo">◈ WorldMatch</span>
+        <button class="results-restart" onclick="location.reload()">Start Over</button>
+      </div>
+      <div class="results-subtitle">Your personalized relocation report · Based on 40 answers · Generated for ${answers.currentCity || 'your city'}</div>
+    </div>`;
+
+    // Intro bar
+    if (data.intro) {
+      html += `<div class="intro-bar fade-up" style="animation-delay:0.1s">
+        <div class="intro-quote">"${data.intro.replace(/\n/g, ' ').substring(0, 300)}"</div>
+        <div class="intro-pills">
+          <span class="intro-pill">💰 ${budgetLabel}</span>
+          <span class="intro-pill">☀️ ${climateLabel}</span>
+          <span class="intro-pill">⚡ ${paceLabel}</span>
+        </div>
+      </div>`;
+    }
+
+    // Place cards
+    data.places.forEach((place, i) => {
+      const delay = 0.2 + (i * 0.1);
+
+      if (i === 0) {
+        // Hero card
+        html += renderHeroCard(place, delay);
+      } else if (i === 1 || i === 2) {
+        if (i === 1) html += `<div class="cards-row">`;
+        html += renderMidCard(place, i + 1, delay);
+        if (i === 2) html += `</div>`;
+      } else {
+        if (i === 3) html += `<div class="cards-row">`;
+        html += renderCompactCard(place, i + 1, delay);
+        if (i === 4) html += `</div>`;
+      }
+    });
+
+    // Summary table
+    if (data.summaryTable.length > 0) {
+      html += renderSummaryTable(data.summaryTable);
+    }
+
+    // Next steps
+    if (data.nextSteps) {
+      html += `<div class="next-steps fade-up" style="animation-delay:0.8s">
+        <div class="next-steps-title">🧭 What To Do Next</div>
+        <div class="next-steps-text">${data.nextSteps.replace(/\n/g, '<br>')}</div>
+        <div class="next-steps-actions">
+          <button class="btn-cta btn-save" onclick="saveReport()">📋 Save My Report</button>
+          <button class="btn-cta btn-retake" onclick="location.reload()">🔄 Retake Quiz</button>
+        </div>
+      </div>`;
+    }
+
+    html += `<div class="results-footer">Powered by WorldMatch × Claude AI</div>`;
+
+    wrap.innerHTML = html;
+    loadingScreen.classList.remove('active');
+    resultsScreen.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Animate summary bars after they're visible
+    setTimeout(() => animateBars(), 500);
+  }, 800);
+}
+
+function starsHTML(count) {
+  return '★'.repeat(count) + '<span style="color:var(--border)">★</span>'.repeat(5 - count);
+}
+
+function renderHeroCard(place, delay) {
+  return `<div class="place-card hero-card fade-up" style="animation-delay:${delay}s">
+    <div class="place-rank">🥇 #1 Match</div>
+    <div class="place-score">${place.score || '–'}</div>
+    <div class="place-city">${place.city}</div>
+    <div class="place-country">${place.country}</div>
+    <div class="stat-grid">
+      <div class="stat-tile"><div class="stat-label">🌡️ Climate</div><div class="stat-stars">${starsHTML(place.stars.climate)}</div></div>
+      <div class="stat-tile"><div class="stat-label">💰 Cost</div><div class="stat-stars">${starsHTML(place.stars.cost)}</div></div>
+      <div class="stat-tile"><div class="stat-label">🛡️ Safety</div><div class="stat-stars">${starsHTML(place.stars.safety)}</div></div>
+      <div class="stat-tile"><div class="stat-label">🎭 Lifestyle</div><div class="stat-stars">${starsHTML(place.stars.lifestyle)}</div></div>
+    </div>
+    <div class="card-section-label">Why It's Your #1</div>
+    <div class="card-section-text">${place.whyMatch}</div>
+    ${place.comparison ? `<div class="card-section-label">How It Compares to ${answers.currentCity || 'Home'}</div><div class="card-section-text">${place.comparison}</div>` : ''}
+    ${place.lifestyle ? `<div class="card-section-label">Your Lifestyle Here</div><div class="card-section-text">${place.lifestyle}</div>` : ''}
+    ${place.tradeoff ? `<div class="tradeoff-block"><div class="card-section-label">⚠️ The Honest Trade-Off</div><div class="card-section-text">${place.tradeoff}</div></div>` : ''}
+    <div class="place-meta">
+      ${place.bestArea ? `<div class="place-meta-item">📍 <strong>Best area:</strong> ${place.bestArea}</div>` : ''}
+      ${place.idealFor ? `<div class="place-meta-item">👤 <strong>Ideal for:</strong> ${place.idealFor}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderMidCard(place, rank, delay) {
+  const rankEmoji = rank === 2 ? '🥈' : '🥉';
+  const wildcardClass = place.isWildcard ? ' wildcard-card' : '';
+  const wildcardBadge = place.isWildcard ? '<span class="wildcard-badge">✨ Wildcard</span>' : '';
+
+  return `<div class="place-card${wildcardClass} fade-up" style="animation-delay:${delay}s">
+    <div class="place-rank">${rankEmoji} #${rank}${wildcardBadge}</div>
+    <div class="place-score">${place.score || '–'}</div>
+    <div class="place-city">${place.city}</div>
+    <div class="place-country">${place.country}</div>
+    <div class="stat-rows">
+      <div class="stat-row"><span class="stat-label">🌡️ Climate</span><span class="stat-stars">${starsHTML(place.stars.climate)}</span></div>
+      <div class="stat-row"><span class="stat-label">💰 Cost</span><span class="stat-stars">${starsHTML(place.stars.cost)}</span></div>
+      <div class="stat-row"><span class="stat-label">🛡️ Safety</span><span class="stat-stars">${starsHTML(place.stars.safety)}</span></div>
+      <div class="stat-row"><span class="stat-label">🎭 Lifestyle</span><span class="stat-stars">${starsHTML(place.stars.lifestyle)}</span></div>
+    </div>
+    <div class="card-section-label">Why It's Your #${rank}</div>
+    <div class="card-section-text">${place.whyMatch}</div>
+    ${place.tradeoff ? `<div class="tradeoff-block"><div class="card-section-label">⚠️ Trade-Off</div><div class="card-section-text">${place.tradeoff}</div></div>` : ''}
+    <div class="place-meta">
+      ${place.bestArea ? `<div class="place-meta-item">📍 ${place.bestArea}</div>` : ''}
+      <div class="place-meta-item" style="font-family:var(--font-number);font-weight:700;">${place.score || '–'}/100</div>
+    </div>
+  </div>`;
+}
+
+function renderCompactCard(place, rank, delay) {
+  return `<div class="place-card compact-card fade-up" style="animation-delay:${delay}s">
+    <div class="place-rank">${rank}</div>
+    <div class="place-score">${place.score || '–'}</div>
+    <div class="place-city">${place.city}</div>
+    <div class="place-country">${place.country}</div>
+    <div class="stat-rows">
+      <div class="stat-row"><span class="stat-label">🌡️ Climate</span><span class="stat-stars">${starsHTML(place.stars.climate)}</span></div>
+      <div class="stat-row"><span class="stat-label">💰 Cost</span><span class="stat-stars">${starsHTML(place.stars.cost)}</span></div>
+      <div class="stat-row"><span class="stat-label">🛡️ Safety</span><span class="stat-stars">${starsHTML(place.stars.safety)}</span></div>
+      <div class="stat-row"><span class="stat-label">🎭 Lifestyle</span><span class="stat-stars">${starsHTML(place.stars.lifestyle)}</span></div>
+    </div>
+    <div class="card-section-text" style="font-size:0.85rem;">${place.whyMatch ? place.whyMatch.substring(0, 200) + (place.whyMatch.length > 200 ? '...' : '') : ''}</div>
+    ${place.tradeoff ? `<div class="tradeoff-block"><div class="card-section-text" style="font-size:0.82rem;margin:0;">${place.tradeoff}</div></div>` : ''}
+    ${place.bestArea ? `<div class="place-meta"><div class="place-meta-item">📍 ${place.bestArea}</div></div>` : ''}
+  </div>`;
+}
+
+function renderSummaryTable(table) {
+  let html = `<div class="summary-section fade-up" style="animation-delay:0.7s">
+    <div class="summary-title">📊 Your Match Summary</div>
+    <table class="summary-table">
+      <thead><tr>
+        <th>Place</th><th>Climate</th><th>Cost</th><th>Safety</th><th>Lifestyle</th><th>Score</th>
+      </tr></thead><tbody>`;
+
+  table.forEach((row, i) => {
+    html += `<tr>
+      <td><strong>${row.name}</strong></td>
+      <td class="summary-bar-cell"><div class="summary-bar"><div class="summary-bar-fill" data-width="${row.climate * 20}"></div></div></td>
+      <td class="summary-bar-cell"><div class="summary-bar"><div class="summary-bar-fill" data-width="${row.cost * 20}"></div></div></td>
+      <td class="summary-bar-cell"><div class="summary-bar"><div class="summary-bar-fill" data-width="${row.safety * 20}"></div></div></td>
+      <td class="summary-bar-cell"><div class="summary-bar"><div class="summary-bar-fill" data-width="${row.lifestyle * 20}"></div></div></td>
+      <td class="summary-score">${row.score}</td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+  return html;
+}
+
+function animateBars() {
+  document.querySelectorAll('.summary-bar-fill').forEach(bar => {
+    const width = bar.dataset.width;
+    bar.style.width = width + '%';
+  });
+}
+
+function saveReport() {
+  const wrap = document.getElementById('results-wrap');
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>My WorldMatch Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+      :root{--bg:#F5F0E8;--text:#0E0E12;--accent:#C8882A;--card:#FFFDF8;--border:#D4C9B5;--muted:#6B6255;--font-heading:'Cormorant Garamond',Georgia,serif;--font-body:'DM Mono','Courier New',monospace;--font-number:'Playfair Display',Georgia,serif}
+      *{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:20px}
+    </style>
+  </head><body>${wrap.innerHTML}</body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'worldmatch-report.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+
+renderQuestion();
+</script>
+</body>
+</html>
