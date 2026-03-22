@@ -2176,6 +2176,26 @@ function showResults(markdown) {
 
   setTimeout(() => {
     const data = parseResults(markdown);
+
+    // Map summary table star data back to places (since individual blocks don't have stars)
+    if (data.summaryTable.length > 0) {
+      data.places.forEach(place => {
+        const tableRow = data.summaryTable.find(row =>
+          row.name.toLowerCase().includes(place.city.toLowerCase()) ||
+          place.city.toLowerCase().includes(row.name.toLowerCase())
+        );
+        if (tableRow) {
+          place.stars = {
+            climate: tableRow.climate,
+            cost: tableRow.cost,
+            safety: tableRow.safety,
+            lifestyle: tableRow.lifestyle
+          };
+          if (!place.score) place.score = tableRow.score;
+        }
+      });
+    }
+
     const loadingScreen = document.getElementById('loading-screen');
     const resultsScreen = document.getElementById('results-screen');
     const wrap = document.getElementById('results-wrap');
