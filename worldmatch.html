@@ -1411,6 +1411,7 @@ const OTHER_COUNTRIES = ['Afghanistan','Albania','Algeria','Angola','Armenia','A
 const questions = [
   // SECTION 1 — Current Living Situation
   { section: 0, key: 'currentLocation', title: 'Where do you currently live?', type: 'location' },
+  { section: 0, key: 'countriesOfInterest', title: 'Which countries interest you most for living? (select up to 5)', type: 'multi', maxSelect: 5, options: ['Argentina','Australia','Austria','Bali / Indonesia','Barbados','Belgium','Belize','Brazil','Cambodia','Canada','Chile','Colombia','Costa Rica','Croatia','Czech Republic','Denmark','Dominican Republic','Ecuador','Egypt','England','Fiji','Finland','France','Georgia','Germany','Ghana','Greece','Guatemala','Hungary','Iceland','India','Ireland','Israel','Italy','Jamaica','Japan','Jordan','Kenya','Malaysia','Maldives','Malta','Mexico','Montenegro','Morocco','Nepal','Netherlands','New Zealand','Nicaragua','Nigeria','Norway','Oman','Panama','Peru','Philippines','Poland','Portugal','Puerto Rico','Romania','Scotland','Senegal','Singapore','Slovenia','South Africa','South Korea','Spain','Sri Lanka','Sweden','Switzerland','Taiwan','Tanzania','Thailand','Turkey','United Arab Emirates','United Kingdom','Uruguay','Vietnam','Wales','Open to anywhere'] },
   { section: 0, key: 'timeLived', title: 'How long have you lived there?', type: 'select', options: ['Less than 1 year','1–3 years','3–5 years','5–10 years','10+ years','My whole life'] },
   { section: 0, key: 'likeMost', title: 'What do you like most about where you live? (select all that apply)', type: 'multi', options: ['Low cost of living','Good weather','Close to family','Good food scene','Outdoor activities','Safe neighborhood','Strong job market','Good schools','Cultural diversity','Nightlife & entertainment','Walkable / public transit','Healthcare access','Nothing — ready to leave'] },
   { section: 0, key: 'dislikeMost', title: 'What bothers you most about where you live? (select all that apply)', type: 'multi', options: ['Too expensive','Bad weather','Too far from family','Lack of culture','Limited outdoor activities','Safety concerns','Poor job market','Bad traffic / sprawl','Political climate','Poor healthcare','Boring / nothing to do','Pollution / air quality','Isolation / loneliness'] },
@@ -1850,6 +1851,7 @@ function formatAnswers(a) {
 
 SECTION 1 — CURRENT LIVING SITUATION
 - Current location: ${val(a.currentCity)}, ${val(a.currentRegion)}, ${val(a.currentCountry)}
+- Countries of interest: ${arr(a.countriesOfInterest)}
 - Time lived there: ${val(a.timeLived)}
 - What I like most about it: ${arr(a.likeMost)}
 - What bothers me most: ${arr(a.dislikeMost)}
