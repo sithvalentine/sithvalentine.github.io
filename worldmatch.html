@@ -2108,14 +2108,15 @@ function parseResults(markdownText) {
 
   while ((match = placeRegex.exec(markdownText)) !== null) {
     const block = match[3];
+    const whyMatch = extractSection(block, "Why it.s your");
     const place = {
       city: match[1].trim(),
       country: match[2].trim().replace(/\s*✨.*/, ''),
       isWildcard: block.includes('Wildcard') || block.includes('surprise you'),
-      whyMatch: extractSection(block, "Why it's your"),
+      whyMatch: whyMatch || extractFirstParagraph(block),
       comparison: extractSection(block, 'How it compares'),
       lifestyle: extractSection(block, 'Your lifestyle here'),
-      tradeoff: extractSection(block, 'The honest trade-off'),
+      tradeoff: extractSection(block, 'The honest trade.off'),
       bestArea: extractInline(block, 'Best area to explore'),
       idealFor: extractInline(block, 'Ideal for someone who'),
       score: extractScore(block),
@@ -2142,15 +2143,25 @@ function parseResults(markdownText) {
 }
 
 function extractSection(block, heading) {
-  const regex = new RegExp(`\\*\\*${heading}[^*]*\\*\\*\\n([\\s\\S]*?)(?=\\n\\*\\*|$)`);
-  const match = block.match(regex);
+  // Normalize curly quotes to straight quotes for matching
+  const normalized = block.replace(/[\u2018\u2019\u2032]/g, "'").replace(/[\u201C\u201D]/g, '"');
+  // Flexible regex: allow any chars in heading, any whitespace after **, capture until next ** or end
+  const regex = new RegExp(`\\*\\*${heading}[^*]*\\*\\*\\s*\\n([\\s\\S]*?)(?=\\n\\*\\*|\\n---|$)`);
+  const match = normalized.match(regex);
   return match ? match[1].trim() : '';
 }
 
 function extractInline(block, label) {
+  const normalized = block.replace(/[\u2018\u2019\u2032]/g, "'").replace(/[\u201C\u201D]/g, '"');
   const regex = new RegExp(`\\*\\*${label}:\\*\\*\\s*(.+)`);
-  const match = block.match(regex);
+  const match = normalized.match(regex);
   return match ? match[1].trim() : '';
+}
+
+function extractFirstParagraph(block) {
+  // Fallback: grab the first substantial paragraph from the block
+  const lines = block.split('\n').filter(l => l.trim() && !l.startsWith('**') && !l.startsWith('#') && !l.startsWith('---') && !l.startsWith('|') && l.trim().length > 30);
+  return lines.length > 0 ? lines.slice(0, 3).join(' ').trim() : '';
 }
 
 function extractScore(block) {
