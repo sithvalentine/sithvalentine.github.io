@@ -278,7 +278,6 @@
       border-color: var(--accent);
       background: #ede9fe;
     }
-    .checkbox-item input { display: none; }
     .check-mark {
       width: 18px;
       height: 18px;
@@ -1536,11 +1535,10 @@ function renderQuestion() {
       html += `<div class="checkbox-grid">`;
       q.options.forEach(o => {
         const isChecked = checked.includes(o);
-        html += `<label class="checkbox-item ${isChecked ? 'checked' : ''}" onclick="toggleCheck(this, '${q.key}', ${q.maxSelect || 0})">
-          <input type="checkbox" value="${o}" ${isChecked ? 'checked' : ''} />
+        html += `<div class="checkbox-item ${isChecked ? 'checked' : ''}" onclick="toggleCheck(this, '${q.key}', ${q.maxSelect || 0})" data-value="${o}">
           <span class="check-mark">${isChecked ? '✓' : ''}</span>
           <span>${o}</span>
-        </label>`;
+        </div>`;
       });
       html += `</div>`;
       if (q.maxSelect) {
@@ -1568,21 +1566,21 @@ function selectSingle(btn, key) {
   answers[key] = btn.dataset.value;
 }
 
-function toggleCheck(label, key, maxSelect) {
-  const input = label.querySelector('input');
+function toggleCheck(el, key, maxSelect) {
+  const value = el.dataset.value;
   if (!answers[key]) answers[key] = [];
 
-  if (!input.checked) {
+  const isChecked = answers[key].includes(value);
+
+  if (!isChecked) {
     if (maxSelect && answers[key].length >= maxSelect) return;
-    input.checked = true;
-    label.classList.add('checked');
-    label.querySelector('.check-mark').textContent = '✓';
-    answers[key].push(input.value);
+    el.classList.add('checked');
+    el.querySelector('.check-mark').textContent = '✓';
+    answers[key].push(value);
   } else {
-    input.checked = false;
-    label.classList.remove('checked');
-    label.querySelector('.check-mark').textContent = '';
-    answers[key] = answers[key].filter(v => v !== input.value);
+    el.classList.remove('checked');
+    el.querySelector('.check-mark').textContent = '';
+    answers[key] = answers[key].filter(v => v !== value);
   }
 }
 
