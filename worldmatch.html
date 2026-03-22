@@ -2182,40 +2182,54 @@ function extractStars(block) {
 // RENDER RESULTS
 // ══════════════════════════════════════════════════════════
 
+function markdownToHtml(md) {
+  let html = md
+    // Horizontal rules
+    .replace(/^---+$/gm, '<hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">')
+    // Headers
+    .replace(/^# (.+)$/gm, '<h1 style="font-family:var(--font-heading);font-size:2rem;font-weight:700;color:var(--text);margin-bottom:12px;">$1</h1>')
+    .replace(/^## (.+)$/gm, '<h2 style="font-family:var(--font-heading);font-size:1.4rem;font-weight:600;color:var(--text);margin-top:28px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--accent);">$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:600;color:var(--text);margin-top:16px;margin-bottom:8px;">$1</h3>')
+    // Bold
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    // Italic
+    .replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '<em>$1</em>')
+    // Table header separator (remove)
+    .replace(/\|[-\s|]+\|/g, '')
+    // Table rows
+    .replace(/^\|(.+)\|$/gm, (match, content) => {
+      const cells = content.split('|').map(c => c.trim());
+      const cellHtml = cells.map(c => `<td style="padding:8px 12px;border-bottom:1px solid var(--bg);font-size:0.85rem;">${c}</td>`).join('');
+      return `<tr>${cellHtml}</tr>`;
+    })
+    // Paragraphs (double newlines)
+    .replace(/\n\n/g, '</p><p style="font-size:0.95rem;line-height:1.7;color:var(--text);margin-bottom:12px;">')
+    // Single newlines to breaks
+    .replace(/\n/g, '<br>');
+
+  // Wrap any table rows in a table
+  html = html.replace(/(<tr>[\s\S]*?<\/tr>(?:\s*<br>\s*<tr>[\s\S]*?<\/tr>)*)/g,
+    '<div style="overflow-x:auto;margin:16px 0;"><table style="width:100%;border-collapse:collapse;background:var(--card);border-radius:8px;">$1</table></div>');
+
+  // Wrap in paragraph
+  html = `<p style="font-size:0.95rem;line-height:1.7;color:var(--text);margin-bottom:12px;">${html}</p>`;
+
+  // Clean up empty paragraphs
+  html = html.replace(/<p[^>]*>\s*<\/p>/g, '');
+  html = html.replace(/<p[^>]*>\s*<br>\s*<\/p>/g, '');
+
+  return html;
+}
+
 function showResults(markdown) {
   finishLoading();
 
   setTimeout(() => {
-    const data = parseResults(markdown);
-
-    // Map summary table star data back to places (since individual blocks don't have stars)
-    if (data.summaryTable.length > 0) {
-      data.places.forEach(place => {
-        const tableRow = data.summaryTable.find(row =>
-          row.name.toLowerCase().includes(place.city.toLowerCase()) ||
-          place.city.toLowerCase().includes(row.name.toLowerCase())
-        );
-        if (tableRow) {
-          place.stars = {
-            climate: tableRow.climate,
-            cost: tableRow.cost,
-            safety: tableRow.safety,
-            lifestyle: tableRow.lifestyle
-          };
-          if (!place.score) place.score = tableRow.score;
-        }
-      });
-    }
-
     const loadingScreen = document.getElementById('loading-screen');
     const resultsScreen = document.getElementById('results-screen');
     const wrap = document.getElementById('results-wrap');
 
-    // Build profile pills from answers
-    const budgetLabel = answers.budget || 'Flexible';
-    const climateLabel = answers.temperature ? answers.temperature.split('(')[0].trim() : 'Any';
-    const paceLabels = ['Very relaxed','Relaxed','Moderate','Active','Very active'];
-    const paceLabel = paceLabels[(answers.pace || 3) - 1];
+    const reportHtml = markdownToHtml(markdown);
 
     let html = '';
 
@@ -2225,55 +2239,21 @@ function showResults(markdown) {
         <span class="results-logo">◈ WorldMatch</span>
         <button class="results-restart" onclick="location.reload()">Start Over</button>
       </div>
-      <div class="results-subtitle">Your personalized relocation report · Based on 40 answers · Generated for ${answers.currentCity || 'your city'}</div>
+      <div class="results-subtitle">Your personalized relocation report · Generated for ${answers.currentCity || 'your city'}</div>
     </div>`;
 
-    // Intro bar
-    if (data.intro) {
-      html += `<div class="intro-bar fade-up" style="animation-delay:0.1s">
-        <div class="intro-quote">"${data.intro.replace(/\n/g, ' ').substring(0, 300)}"</div>
-        <div class="intro-pills">
-          <span class="intro-pill">💰 ${budgetLabel}</span>
-          <span class="intro-pill">☀️ ${climateLabel}</span>
-          <span class="intro-pill">⚡ ${paceLabel}</span>
-        </div>
-      </div>`;
-    }
+    // Full report rendered from markdown
+    html += `<div class="place-card fade-up" style="animation-delay:0.15s;margin:24px 36px;padding:40px;">
+      ${reportHtml}
+    </div>`;
 
-    // Place cards
-    data.places.forEach((place, i) => {
-      const delay = 0.2 + (i * 0.1);
-
-      if (i === 0) {
-        // Hero card
-        html += renderHeroCard(place, delay);
-      } else if (i === 1 || i === 2) {
-        if (i === 1) html += `<div class="cards-row">`;
-        html += renderMidCard(place, i + 1, delay);
-        if (i === 2) html += `</div>`;
-      } else {
-        if (i === 3) html += `<div class="cards-row">`;
-        html += renderCompactCard(place, i + 1, delay);
-        if (i === 4) html += `</div>`;
-      }
-    });
-
-    // Summary table
-    if (data.summaryTable.length > 0) {
-      html += renderSummaryTable(data.summaryTable);
-    }
-
-    // Next steps
-    if (data.nextSteps) {
-      html += `<div class="next-steps fade-up" style="animation-delay:0.8s">
-        <div class="next-steps-title">🧭 What To Do Next</div>
-        <div class="next-steps-text">${data.nextSteps.replace(/\n/g, '<br>')}</div>
-        <div class="next-steps-actions">
-          <span class="btn-cta" style="background:rgba(124,58,237,0.1);color:var(--accent);cursor:default;">✓ Report sent to ${userEmail}</span>
-          <button class="btn-cta btn-retake" onclick="location.reload()">🔄 Retake Quiz</button>
-        </div>
-      </div>`;
-    }
+    // Actions
+    html += `<div class="next-steps fade-up" style="animation-delay:0.3s">
+      <div class="next-steps-actions">
+        <span class="btn-cta" style="background:rgba(124,58,237,0.1);color:var(--accent);cursor:default;">✓ Report sent to ${userEmail}</span>
+        <button class="btn-cta btn-retake" onclick="location.reload()">🔄 Retake Quiz</button>
+      </div>
+    </div>`;
 
     html += `<div class="results-footer">Powered by WorldMatch × Claude AI</div>`;
 
@@ -2281,9 +2261,6 @@ function showResults(markdown) {
     loadingScreen.classList.remove('active');
     resultsScreen.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Animate summary bars after they're visible
-    setTimeout(() => animateBars(), 500);
   }, 800);
 }
 
