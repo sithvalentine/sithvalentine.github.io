@@ -2,8 +2,8 @@ name: Weekly Finance Article
 
 on:
   schedule:
-    # 9:00 AM CST = 15:00 UTC (14:00 UTC during CDT, but using CST/UTC-6 standard)
-    - cron: '0 15 * * 1'
+    # 8:00 AM CST = 14:00 UTC
+    - cron: '0 14 * * 1'
   workflow_dispatch: # allows manual trigger from GitHub Actions UI
 
 jobs:
