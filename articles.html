@@ -5,12 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Personal Finance Articles – Wealth Builder Tools</title>
   <meta name="description" content="Personal finance articles covering investing, budgeting, real estate, and economic trends. Updated weekly with actionable tips for building wealth." />
-
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6409027472747425">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6409027472747425"
-    crossorigin="anonymous"></script>
-
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6409027472747425" crossorigin="anonymous"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,10 +19,7 @@
       color: #333;
     }
 
-    .site-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
+    .site-header { text-align: center; margin-bottom: 40px; }
     .site-header h1 {
       font-size: clamp(1.8rem, 5vw, 2.6rem);
       font-weight: 800;
@@ -87,36 +81,61 @@
       letter-spacing: 0.05em;
       align-self: flex-start;
     }
-    .tag-investing  { background: #ede9fe; color: #7c3aed; }
-    .tag-economy    { background: #dbeafe; color: #1d4ed8; }
-    .tag-realestate { background: #d1fae5; color: #065f46; }
-    .tag-budgeting  { background: #fef3c7; color: #92400e; }
+    .tag-investing   { background: #ede9fe; color: #7c3aed; }
+    .tag-economy     { background: #dbeafe; color: #1d4ed8; }
+    .tag-realestate  { background: #d1fae5; color: #065f46; }
+    .tag-budgeting   { background: #fef3c7; color: #92400e; }
+    .tag-finance     { background: #e0e7ff; color: #4338ca; }
 
     .article-date {
       font-size: 0.75rem;
       color: #9ca3af;
       font-weight: 600;
     }
-
     .article-title {
       font-size: 1.1rem;
       font-weight: 800;
       color: #1e1b4b;
       line-height: 1.4;
     }
-
     .article-excerpt {
       font-size: 0.88rem;
       color: #6b7280;
       line-height: 1.65;
       flex: 1;
     }
-
     .article-cta {
       font-size: 0.85rem;
       font-weight: 700;
       color: #7c3aed;
       margin-top: 4px;
+    }
+
+    /* Loading state */
+    .loading-message {
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      padding: 60px 20px;
+    }
+    .loading-message .spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Error state */
+    .error-message {
+      text-align: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      padding: 40px 20px;
     }
 
     footer {
@@ -125,10 +144,13 @@
       font-size: 0.8rem;
       margin-top: 48px;
     }
-    footer a { color: rgba(255,255,255,0.75); text-decoration: none; }
+    footer a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+    }
     footer a:hover { text-decoration: underline; }
 
-    /* ── Nav ── */
+    /* Nav */
     .site-nav {
       max-width: 760px;
       margin: 0 auto 24px;
@@ -148,8 +170,14 @@
       border: 1px solid rgba(255,255,255,0.25);
       transition: background 0.15s, color 0.15s;
     }
-    .site-nav a:hover { background: rgba(255,255,255,0.15); color: #fff; }
-    .site-nav a.nav-active { background: rgba(255,255,255,0.2); color: #fff; }
+    .site-nav a:hover {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+    .site-nav a.nav-active {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -168,88 +196,111 @@
     <p>Weekly takes on investing, the economy, and building wealth in today's market.</p>
   </div>
 
-  <div class="articles-grid">
-    <a class="article-card" href="https://sithvalentine.github.io/articles/fed-holding-rates-steady-what-it-means-2026.html">
-      <span class="article-tag tag-economy">Economy</span>
-      <div class="article-date">April 06, 2026</div>
-      <div class="article-title">The Fed Is Holding Steady — Here's What That Means for Your Money in 2026</div>
-      <div class="article-excerpt">The Federal Reserve continues to hold interest rates as inflation proves stubborn. Here's how this extended pause affects your savings, investments, and borrowing.</div>
-      <div class="article-cta">Read article →</div>
-    </a>
-
-    <a class="article-card" href="https://sithvalentine.github.io/articles/fed-holding-rates-steady-what-it-means-for-your-money-march-2026.html">
-      <span class="article-tag tag-economy">Economy</span>
-      <div class="article-date">March 30, 2026</div>
-      <div class="article-title">The Fed Is Holding Rates Steady — Here's What That Means for Your Money</div>
-      <div class="article-excerpt">The Federal Reserve is keeping rates elevated well into 2026. Here's how to turn a frustrating rate environment into a wealth-building opportunity.</div>
-      <div class="article-cta">Read article →</div>
-    </a>
-
-    <a class="article-card" href="https://sithvalentine.github.io/articles/fed-holding-rates-steady-what-it-means-for-your-money-march-2026.html">
-      <span class="article-tag tag-economy">Economy</span>
-      <div class="article-date">March 23, 2026</div>
-      <div class="article-title">The Fed Is Holding Rates Steady — Here's What That Means for Your Money</div>
-      <div class="article-excerpt">The Federal Reserve kept rates unchanged again, and markets are recalibrating expectations. Here's how to position your savings, investments, and debt strategy right now.</div>
-      <div class="article-cta">Read article →</div>
-    </a>
-
-
-    <a class="article-card" href="https://sithvalentine.github.io/articles/tariffs-portfolio-impact-2026.html">
-      <span class="article-tag tag-investing">Investing</span>
-      <div class="article-date">March 28, 2026</div>
-      <div class="article-title">How the 2026 Tariff Escalation Is Affecting Your Investment Portfolio</div>
-      <div class="article-excerpt">Sweeping new tariffs on imports from dozens of countries have sent markets into their most volatile stretch since 2022. Here's what's actually happening, which sectors are hit, and what to do.</div>
-      <div class="article-cta">Read article →</div>
-    </a>
-
-    <a class="article-card" href="https://sithvalentine.github.io/articles/emergency-fund-guide-2026.html">
-      <span class="article-tag tag-budgeting">Budgeting</span>
-      <div class="article-date">March 25, 2026</div>
-      <div class="article-title">How Much Emergency Fund Do You Actually Need in 2026?</div>
-      <div class="article-excerpt">The classic 3–6 month rule may not be enough with economic uncertainty and tariff-driven inflation. Here's how to calculate your real number and build one from scratch.</div>
-      <div class="article-cta">Read article →</div>
-    </a>
-
-    <a class="article-card" href="https://sithvalentine.github.io/articles/roth-ira-vs-401k-2026.html">
-      <span class="article-tag tag-investing">Investing</span>
-      <div class="article-date">March 21, 2026</div>
-      <div class="article-title">Roth IRA vs 401(k) in 2026: Which Should You Max Out First?</div>
-      <div class="article-excerpt">Updated 2026 contribution limits, tax implications, employer match strategy, and a clear decision framework for every income level.</div>
-      <div class="article-cta">Read article →</div>
-    </a>
-
-    <a class="article-card" href="https://sithvalentine.github.io/articles/markets-middle-east-oil-march-2026.html">
-      <span class="article-tag tag-investing">Investing</span>
-      <div class="article-date">March 20, 2026</div>
-      <div class="article-title">Oil Hits $112 and Markets Sell Off — What Investors Should Do Right Now</div>
-      <div class="article-excerpt">Iraq declared force majeure on oilfields and drones struck refineries in Kuwait. Crude spiked to $112, the Dow is on pace for its worst month since 2022. Here's how long-term investors should respond.</div>
-      <div class="article-cta">Read article →</div>
-    </a>
-
-    <a class="article-card" href="https://sithvalentine.github.io/articles/high-yield-savings-march-2026.html">
-      <span class="article-tag tag-economy">Economy</span>
-      <div class="article-date">March 14, 2026</div>
-      <div class="article-title">High-Yield Savings Still Paying Up to 5% — Should You Lock In a CD Before the Fed Cuts?</div>
-      <div class="article-excerpt">The Fed held rates at 3.5%–3.75% and now projects only one cut for all of 2026. Top accounts are still paying 4–5% APY. Here's how to position your cash savings right now.</div>
-      <div class="article-cta">Read article →</div>
-    </a>
-
-
-
-
-
-
-
+  <div class="articles-grid" id="articlesGrid">
+    <div class="loading-message">
+      <div class="spinner"></div>
+      <p>Loading articles...</p>
+    </div>
   </div>
 
   <footer>
     <p>&copy; <span id="year"></span> Wealth Builder Tools &nbsp;|&nbsp;
+    <a href="https://sithvalentine.github.io/articles.html">Articles</a> &nbsp;|&nbsp;
     <a href="https://sithvalentine.github.io/about.html">About</a> &nbsp;|&nbsp;
     <a href="https://sithvalentine.github.io/contact.html">Contact</a> &nbsp;|&nbsp;
     <a href="https://sithvalentine.github.io/privacy-policy.html">Privacy Policy</a> &nbsp;|&nbsp;
     <a href="https://sithvalentine.github.io/disclaimer.html">Disclaimer</a></p>
   </footer>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Tag classifier: maps article title keywords to visual tag
+    function classifyArticle(title) {
+      var t = title.toLowerCase();
+      if (t.includes('fed') || t.includes('rate') || t.includes('inflation') || t.includes('oil') || t.includes('economy') || t.includes('savings account') || t.includes('hysa') || t.includes('cd ') || t.includes('high-yield'))
+        return { label: 'Economy', css: 'tag-economy' };
+      if (t.includes('invest') || t.includes('portfolio') || t.includes('tariff') || t.includes('roth') || t.includes('401') || t.includes('stock') || t.includes('market') || t.includes('pillar') || t.includes('$1m'))
+        return { label: 'Investing', css: 'tag-investing' };
+      if (t.includes('budget') || t.includes('emergency fund') || t.includes('buy now') || t.includes('pay later') || t.includes('bnpl') || t.includes('debt') || t.includes('loan') || t.includes('credit'))
+        return { label: 'Budgeting', css: 'tag-budgeting' };
+      if (t.includes('real estate') || t.includes('housing') || t.includes('mortgage') || t.includes('rent'))
+        return { label: 'Real Estate', css: 'tag-realestate' };
+      if (t.includes('freelance') || t.includes('gig') || t.includes('side hustle') || t.includes('income'))
+        return { label: 'Finance', css: 'tag-finance' };
+      return { label: 'Finance', css: 'tag-finance' };
+    }
+
+    // Strip HTML tags from excerpt
+    function stripHTML(html) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      var text = tmp.textContent || tmp.innerText || '';
+      return text.replace(/\s*\[\u2026\]\s*$/, '...').trim();
+    }
+
+    // Format date
+    function formatDate(dateStr) {
+      var d = new Date(dateStr);
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return months[d.getMonth()] + ' ' + String(d.getDate()).padStart(2, '0') + ', ' + d.getFullYear();
+    }
+
+    // Decode HTML entities
+    function decodeEntities(str) {
+      var tmp = document.createElement('textarea');
+      tmp.innerHTML = str;
+      return tmp.value;
+    }
+
+    // Render articles from WordPress REST API
+    function renderArticles(posts) {
+      var grid = document.getElementById('articlesGrid');
+      grid.innerHTML = '';
+
+      posts.forEach(function(post) {
+        var title = decodeEntities(post.title.rendered);
+        var tag = classifyArticle(title);
+        var excerpt = stripHTML(post.excerpt.rendered);
+        var date = formatDate(post.date);
+
+        var card = document.createElement('a');
+        card.className = 'article-card';
+        card.href = post.link;
+
+        card.innerHTML =
+          '<span class="article-tag ' + tag.css + '">' + tag.label + '</span>' +
+          '<div class="article-date">' + date + '</div>' +
+          '<div class="article-title">' + title + '</div>' +
+          '<div class="article-excerpt">' + excerpt + '</div>' +
+          '<div class="article-cta">Read article →</div>';
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Fetch from WordPress REST API
+    var API_URL = 'https://9dimesproject.com/wp-json/wp/v2/posts?categories=15&per_page=20&orderby=date&order=desc';
+
+    fetch(API_URL)
+      .then(function(res) {
+        if (!res.ok) throw new Error('API returned ' + res.status);
+        return res.json();
+      })
+      .then(function(posts) {
+        if (posts.length === 0) {
+          document.getElementById('articlesGrid').innerHTML =
+            '<div class="error-message"><p>No articles found. Check back soon!</p></div>';
+          return;
+        }
+        renderArticles(posts);
+      })
+      .catch(function(err) {
+        console.error('Failed to load articles:', err);
+        document.getElementById('articlesGrid').innerHTML =
+          '<div class="error-message"><p>Unable to load articles right now. Please try again later.</p></div>';
+      });
+  </script>
+
 </body>
 </html>
