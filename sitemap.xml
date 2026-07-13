@@ -116,6 +116,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://sithvalentine.github.io/articles/fed-rate-cuts-2026-personal-finance-playbook.html</loc>
+    <lastmod>2026-07-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sithvalentine.github.io/articles.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
