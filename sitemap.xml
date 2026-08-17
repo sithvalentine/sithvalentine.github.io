@@ -146,6 +146,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://sithvalentine.github.io/articles/fed-rate-cut-august-2026-what-to-do.html</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sithvalentine.github.io/articles.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
